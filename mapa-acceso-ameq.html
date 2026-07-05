@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceso y movilidad · Paradas AMEQ + BLOQUE</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+html,body{height:100%}
+#map{position:absolute;inset:0;background:#0b1330}
+.top{position:absolute;top:0;left:0;right:0;height:60px;z-index:1000;background:linear-gradient(90deg,#254185,#005ab2);color:#fff;display:flex;align-items:center;padding:0 20px;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.top b{font-size:17px;font-weight:800}.top span{font-size:12px;color:#cfe0f5}
+.top .tag{margin-left:auto;font-weight:800;font-size:11px;text-align:right;line-height:1.2}.top .tag em{color:#2a9eda;font-style:normal;display:block;font-size:13px}
+.legend{position:absolute;bottom:18px;left:18px;z-index:1000;background:#fff;border-radius:12px;padding:11px 15px;box-shadow:0 4px 16px rgba(0,0,0,.25);font-size:13px}
+.legend .row{display:flex;align-items:center;gap:9px;margin:5px 0}
+.legend .num{width:20px;height:20px;border-radius:50%;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff}
+.b{background:#005ab2}.rd{background:#ce3a2b}
+.note{position:absolute;bottom:18px;right:18px;z-index:1000;background:rgba(255,255,255,.95);border-radius:10px;padding:10px 14px;font-size:11.5px;color:#254185;max-width:290px;box-shadow:0 4px 16px rgba(0,0,0,.18);line-height:1.4}
+.note b{color:#ce3a2b}
+.hint{position:absolute;top:70px;right:16px;z-index:1000;background:rgba(37,65,133,.92);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.pin{border:3px solid #fff;border-radius:50%;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.4);cursor:pointer;transition:transform .15s}
+.pin:hover{transform:scale(1.15)}
+.leaflet-popup-content{font-size:13px;line-height:1.45}.leaflet-popup-content b{color:#254185}
+.leaflet-popup-content .k{color:#ce3a2b;font-weight:800}
+</style></head>
+<body>
+<div class="top"><b>Acceso y movilidad · Centro de Atención en BLOQUE</b><span>Paradas AMEQ 1–4 sobre la lateral · Punto 5 = ingreso a BLOQUE</span><div class="tag"><em>ATENCIÓN CIUDADANA · SIT</em>Querétaro con Futuro</div></div>
+<div id="map"></div>
+<div class="hint">Haz clic en cada punto para ver el detalle · usa la rueda para acercar</div>
+<div class="legend">
+  <div class="row"><span class="num b">1</span> Paradas AMEQ (lateral Av. 5 de Febrero)</div>
+  <div class="row"><span class="num rd">5</span> Acceso a BLOQUE · Centro de Atención</div>
+</div>
+<div class="note">Gestión con AMEQ: instalar <b>paradas de autobús más cercanas al acceso</b> sobre la lateral, o autorizar las del transporte público lo más cerca posible de la calle de la llantera Michelin. Unidades de enlace <b>con distintivo</b> de la parada al acceso y de regreso.</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const W=1280,H=720;
+const map=L.map('map',{crs:L.CRS.Simple,minZoom:-1,maxZoom:3,zoomSnap:0.25,zoomControl:true});
+const bounds=[[0,0],[H,W]];
+L.imageOverlay('mapa-ameq-bloque.jpg',bounds).addTo(map);
+map.fitBounds(bounds);
+map.setMaxBounds(map.getBounds().pad(0.25));
+// pixel (x,y desde arriba-izquierda) -> latlng CRS.Simple = [H - y, x]
+function P(x,y){return [H-y,x];}
+function pin(x,y,label,color,size,popup){
+  const ic=L.divIcon({className:'',html:`<div class="pin" style="width:${size}px;height:${size}px;background:${color};font-size:${Math.round(size*0.5)}px">${label}</div>`,iconSize:[size,size],iconAnchor:[size/2,size/2]});
+  return L.marker(P(x,y),{icon:ic}).addTo(map).bindPopup(popup,{maxWidth:260});
+}
+const gestion='<br><span style="color:#5a6273">Gestión: acercar la parada al acceso; unidad de enlace con distintivo.</span>';
+pin(423,78 ,'2','#005ab2',34,'<b>Parada AMEQ 2</b><br>Lateral de Av. 5 de Febrero, tramo norte.'+gestion);
+pin(372,138,'3','#005ab2',34,'<b>Parada AMEQ 3</b><br>Lateral de Av. 5 de Febrero, tramo norte.'+gestion);
+pin(688,630,'1','#005ab2',34,'<b>Parada AMEQ 1</b><br>Lateral de Av. 5 de Febrero, tramo sur (frente al acceso).'+gestion);
+pin(628,663,'4','#005ab2',34,'<b>Parada AMEQ 4</b><br>Lateral de Av. 5 de Febrero, tramo sur.'+gestion);
+pin(818,262,'5','#ce3a2b',44,'<b class="k">Acceso a BLOQUE · Punto 5</b><br>Ingreso peatonal al <b>Centro de Atención Zona Norte</b> por la calle de la llantera Michelin.<br><span style="color:#5a6273">Camionetas de enlace con distintivo trasladan de la parada al acceso y de regreso a la lateral, para ciudadanía y personal.</span>');
+// abre el acceso a BLOQUE al cargar, como foco
+setTimeout(()=>{map.eachLayer(l=>{});},50);
+</script>
+</body></html>

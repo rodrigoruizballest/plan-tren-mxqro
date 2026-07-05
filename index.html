@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan de Acción SIT · Tren México–Querétaro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+html,body{height:100%;background:#0f2038;overflow:hidden}
+/* ---- navigator shell ---- */
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.slide{width:1280px;height:720px;background:#fff;position:relative;overflow:hidden;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.55);
+  transform:scale(var(--s));transition:opacity .45s ease,transform .45s ease;display:none}
+.slide.active{display:block}
+.slide.enter{animation:pop .5s ease both}
+@keyframes pop{from{opacity:0;transform:scale(calc(var(--s)*.985)) translateY(10px)}to{opacity:1}}
+/* progress + controls */
+#bar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,#2A9EDA,#005ab2);z-index:40;transition:width .4s ease}
+#dots{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;z-index:40;background:rgba(12,19,48,.6);padding:9px 18px;border-radius:30px;backdrop-filter:blur(6px)}
+#dots .sec{display:flex;align-items:center;gap:7px;color:#8fa0c8;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:color .2s}
+#dots .sec .ic{width:9px;height:9px;border-radius:50%;background:#3a476e;transition:all .2s}
+#dots .sec.on{color:#fff}#dots .sec.on .ic{background:#2A9EDA;box-shadow:0 0 0 4px rgba(42,158,218,.25)}
+#nav{position:fixed;bottom:14px;right:20px;display:flex;gap:8px;z-index:40}
+#nav button,#counter{background:rgba(255,255,255,.1);color:#dfe6f5;border:1px solid rgba(255,255,255,.18);border-radius:9px;font-size:14px;font-weight:600;padding:7px 13px;cursor:pointer;backdrop-filter:blur(6px)}
+#nav button:hover{background:rgba(255,255,255,.22)}
+#counter{position:fixed;bottom:14px;left:20px;z-index:40;font-variant-numeric:tabular-nums}
+.hint{position:fixed;top:14px;right:18px;z-index:40;color:#6f7ea8;font-size:11px}
+/* ============ SLIDE STYLES (Plan Orden) ============ */
+.band{position:absolute;top:0;right:0;height:78px;width:62%;background:linear-gradient(90deg,#005ab2 0%,#254185 100%);display:flex;align-items:center;justify-content:flex-end;padding-right:40px}
+.band h2{color:#fff;font-size:23px;font-weight:700;text-align:right}
+.tag{position:absolute;top:24px;left:54px;color:#254185;font-weight:800;font-size:11px;line-height:1.15}
+.tag b{display:block;font-size:14px;color:#254185}
+.body{position:absolute;top:104px;left:54px;right:54px;bottom:52px}
+.qro{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);text-align:center}
+.qro .n{font-weight:800;color:#254185;font-size:13px;letter-spacing:.5px}.qro .m{font-size:9px;letter-spacing:2.5px;color:#5a5674;margin-top:4px;text-transform:uppercase}
+.pill{position:absolute;bottom:16px;right:26px;font-size:10px;color:#9aa5bd;font-weight:600}
+/* portada */
+.cover{position:absolute;inset:0;background:linear-gradient(135deg,#14284d 0%,#254185 55%,#005ab2 100%);display:flex;flex-direction:column;justify-content:center;padding:0 90px;overflow:hidden}
+.cover::after{content:'';position:absolute;right:-140px;top:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(42,158,218,.22),transparent 62%)}
+.cover .badge{position:absolute;top:54px;right:70px;color:#fff;text-align:right;font-weight:800}
+.cover .badge b{display:block;font-size:22px}.cover .badge span{font-size:12px;letter-spacing:5px;color:#c7d2ea}
+.cover .kick{color:#2A9EDA;font-weight:700;letter-spacing:2px;font-size:15px;text-transform:uppercase}
+.cover h1{color:#fff;font-size:50px;font-weight:800;line-height:1.08;margin:16px 0 12px;position:relative;z-index:2}
+.cover p{color:#c7d2ea;font-size:19px;max-width:820px;position:relative;z-index:2}
+.cover .up{margin-top:26px;color:#9fb0d6;font-size:13px;position:relative;z-index:2}
+.cover .fr{display:flex;gap:14px;margin-top:30px;position:relative;z-index:2}
+.cover .fr .c{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:13px 18px;color:#fff}
+.cover .fr .c b{display:block;color:#2A9EDA;font-size:12px;letter-spacing:1px}.cover .fr .c span{font-size:13px;color:#c7d2ea}
+/* agenda */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;height:100%;align-content:center}
+.ag .fc{border:1.5px solid #e4e8f0;border-radius:16px;padding:26px 22px;background:#fafbfe;position:relative;overflow:hidden}
+.ag .fc .no{font-size:40px;font-weight:800;color:#e6ebf5;position:absolute;top:10px;right:16px}
+.ag .fc .ic{font-size:26px}
+.ag .fc h4{color:#254185;font-size:18px;font-weight:800;margin:10px 0 8px}
+.ag .fc p{font-size:13.5px;color:#5a6273;line-height:1.4}
+.ag .fc .who{margin-top:12px;font-size:11px;font-weight:700;color:#254185;letter-spacing:.4px;text-transform:uppercase}
+.ag .fc.a{border-top:5px solid #254185}.ag .fc.b{border-top:5px solid #005ab2}.ag .fc.c{border-top:5px solid #2A9EDA}
+/* mapa side */
+.maprow{display:flex;gap:22px;height:100%}
+.mapwrap{flex:2.1;border-radius:14px;overflow:hidden;border:2px solid #254185;position:relative}
+.mapwrap img{width:100%;height:100%;object-fit:cover}
+.side{flex:1;display:flex;flex-direction:column;gap:14px}
+.pcard{border:1.5px solid #e4e8f0;border-radius:14px;padding:16px 18px;background:#fafbfe}
+.pcard h3{font-size:13px;color:#CE3A2B;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.pcard ul{list-style:none}
+.pcard li{position:relative;padding-left:22px;font-size:15px;color:#2b2f3a;margin-bottom:10px;line-height:1.3;font-weight:600}
+.pcard li::before{content:'';position:absolute;left:0;top:5px;width:11px;height:11px;border-radius:50%;background:#005ab2;border:2px solid #fff;box-shadow:0 0 0 1px #005ab2}
+.imp{background:#254185;color:#fff;border-radius:14px;padding:14px 18px}
+.imp .k{font-size:11px;color:#9fb3d1;text-transform:uppercase;letter-spacing:.8px}
+.imp .v{font-size:15px;font-weight:600;margin-top:4px;line-height:1.4}
+.imp b{color:#2A9EDA}
+.legend{position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.92);border-radius:8px;padding:6px 12px;font-size:11.5px;color:#254185;font-weight:600}
+.legend .d{display:inline-block;width:11px;height:11px;border-radius:50%;background:#005ab2;margin-right:5px;vertical-align:middle}
+.legend .o{background:#F2A63B}
+/* tablas */
+h3.sec{color:#254185;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+h3.sec::before{content:'';width:24px;height:12px;background:#254185;clip-path:polygon(0 0,70% 0,100% 50%,70% 100%,0 100%)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:#254185;color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:12px}
+th.c,td.c{text-align:center}
+td{padding:9px 12px;border-bottom:1px solid #eef1f5;color:#2b2f3a;vertical-align:middle}
+td.u{font-weight:800;color:#254185;font-size:16px;text-align:center;width:70px}
+td.inh{color:#CE3A2B;font-weight:700}
+tr.tot td{background:#f4f7fc;font-weight:800;border-top:2px solid #254185}
+.chip{display:inline-block;background:#2A9EDA;color:#254185;font-weight:700;border-radius:20px;padding:6px 16px;font-size:14px;margin-bottom:10px}
+/* barras */
+.bars{columns:2;column-gap:34px}
+.bar{break-inside:avoid;margin-bottom:9px}
+.bar .lb{display:flex;justify-content:space-between;font-size:12px;color:#2b2f3a;margin-bottom:2px}
+.bar .lb b{color:#254185}
+.bar .track{height:12px;background:#eef2f9;border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,#005ab2,#254185);border-radius:6px}
+.bar.big .fill{background:linear-gradient(90deg,#2A9EDA,#005ab2)}
+/* requerimientos */
+.st{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:4px 12px;white-space:nowrap}
+.st.si{background:#e6f4ea;color:#1e7a37}.st.parc{background:#fdf1dc;color:#a5710f}.st.no{background:#fbe6e6;color:#CE3A2B}
+table.req td{font-size:12.5px;padding:8px 12px;vertical-align:top}
+table.req td.sec{font-weight:800;color:#254185;font-size:13px;width:150px}
+table.req td.eq{color:#5a6273;font-size:11.5px;line-height:1.35}
+table.req th{font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:4px}
+.mcard{border:1.5px solid #e4e8f0;border-radius:14px;padding:16px 14px;background:#fafbfe;text-align:center}
+.mcard .v{font-size:34px;font-weight:800;color:#254185;line-height:1}
+.mcard .k{font-size:11.5px;color:#5a6273;margin-top:6px;font-weight:600;line-height:1.25}
+.mcard.acc{background:#254185;border-color:#254185}.mcard.acc .v{color:#2A9EDA}.mcard.acc .k{color:#c7d2ea}
+.dotbox{margin-top:18px;background:#fbe6e6;border:1.5px solid #ef9a9a;border-radius:14px;padding:14px 20px}
+.dotbox h4{color:#CE3A2B;font-size:12px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.dotbox p{font-size:13.5px;color:#7a2f28;font-weight:600;line-height:1.4}
+.instbox{margin-top:14px;background:#254185;color:#fff;border-radius:14px;padding:14px 20px;font-size:13.5px;line-height:1.4}
+.instbox b{color:#2A9EDA}
+/* logistica operativa (dos columnas) */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px;height:100%}
+.lc{border:1.5px solid #e4e8f0;border-radius:14px;padding:18px 20px;background:#fafbfe}
+.lc h4{color:#254185;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.lc h4 .b{width:8px;height:18px;border-radius:3px;background:#2A9EDA}
+.lc ul{list-style:none}
+.lc li{position:relative;padding-left:20px;font-size:13.5px;color:#2b2f3a;margin-bottom:11px;line-height:1.38}
+.lc li::before{content:'';position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:2px;background:#254185}
+.lc li b{color:#254185}
+.hourbox{display:flex;gap:14px;margin-bottom:14px}
+.hourbox .h{flex:1;background:#254185;color:#fff;border-radius:12px;padding:12px 16px;text-align:center}
+.hourbox .h .k{font-size:10px;color:#9fb3d1;letter-spacing:1px;text-transform:uppercase}
+.hourbox .h .v{font-size:17px;font-weight:800;color:#2A9EDA;margin-top:3px}
+/* VPN diagrama */
+.flow{display:flex;align-items:center;justify-content:center;gap:0;margin:26px 0 8px}
+.node{width:150px;height:120px;border-radius:16px;border:2px solid #254185;background:#fafbfe;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;position:relative}
+.node .ic{font-size:30px}
+.node .t{font-size:13px;font-weight:800;color:#254185;margin-top:6px;line-height:1.2}
+.node .s{font-size:10.5px;color:#5a6273;margin-top:3px;line-height:1.25}
+.node.vpn{background:#254185;border-color:#254185}.node.vpn .t{color:#fff}.node.vpn .s{color:#c7d2ea}.node.vpn .ic{filter:none}
+.arrow{width:70px;height:3px;background:#254185;position:relative;flex:none}
+.arrow::after{content:'';position:absolute;right:-2px;top:-5px;border-left:11px solid #254185;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.arrow .lab{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#254185;font-weight:700;white-space:nowrap}
+.prelim{position:absolute;top:90px;right:54px;background:#fdf1dc;color:#a5710f;font-size:10px;font-weight:800;border-radius:20px;padding:5px 14px;letter-spacing:.5px;text-transform:uppercase;z-index:3}
+/* cronograma */
+.timeline{position:relative;margin-top:10px;padding-left:6px}
+.tl{display:grid;grid-template-columns:120px 1fr 130px;gap:16px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f5}
+.tl .d{font-weight:800;color:#254185;font-size:14px}
+.tl .d small{display:block;font-size:10px;color:#8a94a6;font-weight:600}
+.tl .w{font-size:13.5px;color:#2b2f3a;line-height:1.35}.tl .w b{color:#254185}
+.tl .o{text-align:right;font-size:11px;font-weight:700;color:#254185}
+.tl.hot .d{color:#CE3A2B}
+/* interactive map slide */
+.mapfull{position:absolute;inset:0}
+.mapfull iframe{width:100%;height:100%;border:0}
+.maplabel{position:absolute;top:14px;left:14px;z-index:5;background:rgba(22,34,78,.92);color:#fff;border-radius:12px;padding:12px 18px;max-width:330px;backdrop-filter:blur(4px)}
+.maplabel h3{font-size:15px;font-weight:800;margin-bottom:5px}
+.maplabel p{font-size:11.5px;color:#c7d2ea;line-height:1.4}
+.maplabel .qr{margin-top:8px;font-size:10.5px;color:#2A9EDA;font-weight:700}
+/* cierre */
+.close{position:absolute;inset:0;background:linear-gradient(135deg,#254185,#254185);display:flex;flex-direction:column;justify-content:center;padding:0 90px;color:#fff}
+.close h1{font-size:40px;font-weight:800;margin-bottom:10px}
+.close p{color:#c7d2ea;font-size:17px;max-width:820px}
+.close .asks{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:900px}
+.close .asks .a{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-left:4px solid #2A9EDA;border-radius:10px;padding:14px 18px}
+.close .asks .a b{color:#2A9EDA;font-size:12px;letter-spacing:.5px}.close .asks .a p{font-size:13px;color:#e7ecf6;margin-top:3px}
+@media print{html,body{overflow:visible;background:#fff}#bar,#dots,#nav,#counter,.hint{display:none}
+  .slide{display:block!important;page-break-after:always;box-shadow:none;border-radius:0;transform:none!important;margin:0 auto}}
+
+/* semaforo prioridades */
+.sem{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sem .col{border:1.5px solid #e4e8f0;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;background:#fafbfe}
+.sem .col .hd{padding:12px 15px;color:#fff;display:flex;align-items:flex-start;gap:10px}
+.sem .col .hd .dot{width:15px;height:15px;border-radius:50%;background:#fff;flex:none;margin-top:2px;box-shadow:0 0 0 3px rgba(255,255,255,.3)}
+.sem .col .hd .t{font-weight:800;font-size:15px;line-height:1.12}
+.sem .col .hd .t small{display:block;font-weight:600;font-size:10px;opacity:.92;margin-top:3px;line-height:1.25}
+.sem .col.r .hd{background:#CE3A2B}.sem .col.y .hd{background:#E8A93B}.sem .col.g .hd{background:#2E8B57}
+.sem .col ul{list-style:none;padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.sem .col li{font-size:12.5px;color:#2b2f3a;line-height:1.28;padding-left:15px;position:relative;font-weight:700}
+.sem .col li::before{content:'';position:absolute;left:0;top:5px;width:7px;height:7px;border-radius:50%}
+.sem .col.r li::before{background:#CE3A2B}.sem .col.y li::before{background:#E8A93B}.sem .col.g li::before{background:#2E8B57}
+.sem .col li span{display:block;font-weight:500;color:#6a7180;font-size:10.5px;margin-top:1px}
+.sem .col .cr{margin-top:auto;padding:9px 14px;font-size:10.5px;color:#5a6273;background:#f1f4f8;border-top:1px solid #e4e8f0;font-weight:600}
+/* checklist operativo */
+.ops{display:grid;grid-template-columns:repeat(2,1fr);gap:13px 18px}
+.opg{border:1.5px solid #e4e8f0;border-radius:12px;padding:13px 16px;background:#fafbfe}
+.opg h4{font-size:12.5px;color:#254185;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;display:flex;align-items:center;gap:9px}
+.opg h4 .n{width:22px;height:22px;border-radius:6px;background:#254185;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.opg .tags{display:flex;flex-wrap:wrap;gap:6px}
+.opg .tags span{font-size:11.5px;background:#eef3fa;color:#254185;border-radius:6px;padding:4px 9px;font-weight:600}
+/* formula home office */
+.formula{display:flex;align-items:stretch;gap:11px;margin-top:4px}
+.fbox{flex:1;border:1.5px solid #e4e8f0;border-radius:12px;padding:13px 8px;background:#fafbfe;text-align:center;position:relative}
+.fbox .v{font-size:27px;font-weight:800;color:#254185;line-height:1}
+.fbox .v.cy{color:#2A9EDA}.fbox .v.rd{color:#CE3A2B}
+.fbox .k{font-size:10.5px;color:#5a6273;margin-top:6px;line-height:1.22;font-weight:600}
+.fbox .op{position:absolute;right:-10px;top:50%;transform:translateY(-50%);z-index:3;background:#254185;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.edit{display:inline-block;font-size:9px;font-weight:800;color:#a5710f;background:#fdf1dc;border-radius:5px;padding:2px 6px;margin-top:4px;letter-spacing:.3px}
+/* estrategia SIT */
+.lead-strat{background:linear-gradient(120deg,#254185,#005ab2);color:#fff;border-radius:14px;padding:17px 22px;margin-bottom:15px;font-size:16px;line-height:1.4;font-weight:600}
+.lead-strat b{color:#2A9EDA;font-weight:800}
+.strat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.scard{border:1.5px solid #e4e8f0;border-radius:12px;padding:13px 13px;background:#fafbfe}
+.scard .ic{font-size:19px}
+.scard .t{font-size:12px;color:#254185;font-weight:700;margin-top:6px;line-height:1.25}
+/* entregables lunes */
+.deliv{display:grid;grid-template-columns:1fr 1fr;gap:9px 22px}
+.deliv .d{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#26303f;line-height:1.3;font-weight:600}
+.deliv .d .ck{width:20px;height:20px;border-radius:6px;background:#2A9EDA;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex:none;margin-top:1px}
+.deliv .d b{color:#254185}
+/* lista requerimientos 4 categorias */
+.req4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.rq{border:1.5px solid #e4e8f0;border-radius:12px;background:#fafbfe;overflow:hidden;display:flex;flex-direction:column}
+.rq .h{padding:10px 13px;color:#fff;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.4px}
+.rq .h .ic{font-size:15px}
+.rq.m .h{background:#254185}.rq.e .h{background:#005ab2}.rq.el .h{background:#2A9EDA}.rq.p .h{background:#CE3A2B}
+.rq ul{list-style:none;padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+.rq li{font-size:11.5px;color:#2b2f3a;line-height:1.28;padding-left:14px;position:relative;font-weight:600}
+.rq li::before{content:'';position:absolute;left:0;top:5px;width:6px;height:6px;border-radius:50%;background:#254185}
+.rq li b{color:#254185}
+/* marca de agua SIT en todas las laminas */
+.slide::after{content:"SECRETARÍA DE INNOVACIÓN Y TECNOLOGÍA";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(-22deg);font-size:44px;font-weight:800;letter-spacing:5px;color:rgba(37,65,133,.06);white-space:nowrap;pointer-events:none;z-index:6}
+.slide:has(.cover)::after,.slide:has(.close)::after,.slide:has(.mapfull)::after{color:rgba(255,255,255,.08)}
+</style></head>
+<body>
+<div id="bar"></div>
+<div id="stage"></div>
+<div id="counter">1 / 21</div>
+<div id="dots"></div>
+<div id="nav"><button id="prev">‹</button><button id="next">›</button></div>
+<div class="hint">← → para navegar · F pantalla completa</div>
+
+<!-- ================= SLIDES ================= -->
+<div id="deck" style="display:none">
+
+<!-- 1 PORTADA -->
+<div class="slide" data-sec="Inicio">
+  <div class="cover">
+    <div class="badge"><img src="logo-muni-white.svg" alt="Municipio de Querétaro" style="height:52px;display:block"></div>
+    <div class="kick">Presentación en conjunto · Transportes, Atención Ciudadana y RRHH</div>
+    <h1>Plan de Acción<br>Tren México–Querétaro</h1>
+    <p>No es reubicar oficinas: es un <b style="color:#fff">modelo inteligente de atención ciudadana en BLOQUE</b>, con innovación, movilidad y eficiencia, ante los cierres de la obra federal sobre Blvd. Bernardo Quintana.</p>
+    <div class="fr">
+      <div class="c"><b>FRENTE 1</b><span>Transporte y combustible</span></div>
+      <div class="c"><b>FRENTE 2</b><span>Atención Ciudadana en BLOQUE</span></div>
+      <div class="c"><b>FRENTE 3</b><span>VPN y home office · RRHH</span></div>
+    </div>
+    <div class="up">Reunión de coordinación · domingo 5 de julio de 2026 · 12:00 h &nbsp;|&nbsp; Cierres desde el 13 de julio · ~7 semanas</div>
+    <div class="up" style="margin-top:6px">Integra la información aportada por las áreas del Municipio · equipo BLOQUE</div>
+  </div>
+</div>
+
+<!-- 2 AGENDA / 3 FRENTES -->
+<div class="slide" data-sec="Inicio">
+  <div class="band"><h2>Tres frentes de acción</h2></div>
+  <div class="tag">PLAN DE ACCIÓN<br><b>TREN MX–QRO</b></div>
+  <div class="body">
+    <div class="ag">
+      <div class="fc a"><div class="no">01</div><div class="ic">🚐</div><h4>Transporte y combustible</h4><p>5 estaciones de carga inhabilitadas por la obra. Reasignación de 161 unidades del parque vehicular a estaciones alternas con horario restringido.</p><div class="who">Sec. de Administración · Transportes</div></div>
+      <div class="fc b"><div class="no">02</div><div class="ic">🏛️</div><h4>Modelo de atención ciudadana</h4><p>BLOQUE como Centro de Atención Zona Norte rediseñado con criterios de innovación: ventanillas priorizadas, toma de turnos, flujos claros y medición de tiempos.</p><div class="who">Sec. de Atención Ciudadana · SIT</div></div>
+      <div class="fc c"><div class="no">03</div><div class="ic">💻</div><h4>VPN y home office</h4><p>Dotar de VPN a las laptops del Municipio para que el personal opere en casa durante los cierres y no dependa del traslado a oficinas.</p><div class="who">RRHH · SIT</div></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTES DEL PLAN</div>
+</div>
+
+<!-- 3 MAPA INTERACTIVO (movido al frente) -->
+<div class="slide" data-sec="Interactivo">
+  <div class="mapfull">
+    <iframe src="mapa-interactivo.html" loading="lazy"></iframe>
+    <div class="maplabel">
+      <h3>Mapa interactivo del corredor</h3>
+      <p>Trazo real de las vías (OpenStreetMap), estaciones del tren y zona de obra. Se puede acercar y hacer clic en cada punto durante la reunión.</p>
+      <div class="qr">Elemento dinámico · abrir en vivo</div>
+    </div>
+  </div>
+  <div class="pill" style="color:#fff;bottom:10px">DINÁMICO · MAPA EN VIVO</div>
+</div>
+
+<!-- 4 TRANSPORTE · MAPA -->
+<div class="slide" data-sec="Transporte">
+  <div class="band"><h2>Estaciones de combustible inhabilitadas</h2></div>
+  <div class="tag">FRENTE 1 ·<br><b>TRANSPORTES</b></div>
+  <div class="body">
+    <div class="maprow">
+      <div class="mapwrap">
+        <img src="mapa.png">
+        <div class="legend"><span class="d" style="background:#e03131"></span>Inhabilitada &nbsp;·&nbsp; <span class="d" style="background:#2f9e44"></span>Alterna &nbsp;·&nbsp; <span class="d o"></span>Obra Federal &nbsp;·&nbsp; <span style="display:inline-block;width:16px;height:4px;background:#7b2d8e;border-radius:2px;vertical-align:middle"></span> Línea del tren</div>
+      </div>
+      <div class="side">
+        <div class="pcard"><h3>5 estaciones inhabilitadas</h3><ul><li>Carretas</li><li>Los Arcos</li><li>Arquitos</li><li>Parques</li><li>Universidad</li></ul></div>
+        <div class="imp"><div class="k">Causa e impacto</div><div class="v">La <b>obra del Gobierno Federal</b> sobre Bernardo Quintana inhabilita 5 estaciones donde carga el parque vehicular del Municipio. Se reasigna a estaciones alternas con horario restringido.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 1 · TRANSPORTE</div>
+</div>
+
+<!-- 4 TRANSPORTE · REASIGNACION -->
+<div class="slide" data-sec="Transporte">
+  <div class="band"><h2>Reasignación de estaciones</h2></div>
+  <div class="tag">FRENTE 1 ·<br><b>TRANSPORTES</b></div>
+  <div class="body">
+    <span class="chip">Consumo de combustible: lunes a viernes de 07:00 a 16:00 h</span>
+    <table>
+      <tr><th class="c">Unidades</th><th>Estación de servicio con restricción de horario</th><th>Estación inhabilitada que sustituye</th></tr>
+      <tr><td class="u">11</td><td>Milenio, La Nación, La República, Pasteur, 5 de Febrero y Corregidora</td><td class="inh">Carretas</td></tr>
+      <tr><td class="u">6</td><td>Tlacote</td><td>—</td></tr>
+      <tr><td class="u">13</td><td>La Luz, Central de Abastos, Centro Histórico, Magno, El Sol, San Pablo, Carrillo, Zenalva, Antea y Bellavista</td><td class="inh">Arcos, Arquitos y Parques</td></tr>
+      <tr><td class="u">64</td><td>Centro Sur</td><td>—</td></tr>
+      <tr><td class="u">5</td><td>Junípero y Tecnológico</td><td class="inh">Universidad</td></tr>
+      <tr><td class="u">23</td><td>Tláloc</td><td>—</td></tr>
+      <tr><td class="u">39</td><td>Ensueño</td><td>—</td></tr>
+      <tr class="tot"><td class="u">161</td><td>Total de unidades administrativas reasignadas</td><td></td></tr>
+    </table>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 1 · TRANSPORTE</div>
+</div>
+
+<!-- 5 TRANSPORTE · DEPENDENCIAS -->
+<div class="slide" data-sec="Transporte">
+  <div class="band"><h2>Parque vehicular por dependencia</h2></div>
+  <div class="tag">FRENTE 1 ·<br><b>TRANSPORTES</b></div>
+  <div class="body">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 class="sec" style="margin-bottom:0">22 dependencias con restricción de horario</h3>
+      <div style="background:#254185;color:#fff;border-radius:12px;padding:7px 20px;text-align:center;white-space:nowrap"><span style="font-size:10px;color:#9fb3d1;letter-spacing:1px">TOTAL UNIDADES</span> <b style="font-size:22px;vertical-align:middle;margin-left:6px">161</b></div>
+    </div>
+    <div class="bars" id="bars"></div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 1 · TRANSPORTE</div>
+</div>
+
+<!-- 6 ACCESO Y MOVILIDAD · AMEQ + BLOQUE -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Acceso y movilidad al Centro de Atención</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <div class="maprow">
+      <div class="mapwrap" style="flex:2.4">
+        <iframe src="mapa-acceso-ameq.html" loading="lazy" style="width:100%;height:100%;border:0;background:#0f2038"></iframe>
+      </div>
+      <div class="side">
+        <div class="pcard"><h3>Ruta ciudadana</h3><ul style="font-size:14px"><li>Paradas AMEQ 1–4 sobre la Av. Lateral</li><li>Acceso a BLOQUE por la calle de la llantera Michelin</li><li>Punto 5 = ingreso al Centro de Atención</li></ul></div>
+        <div class="imp"><div class="k">Gestión requerida con AMEQ</div><div class="v">Instalar <b>paradas de autobús más cercanas al acceso</b> sobre la lateral, o autorizar las paradas del transporte público lo más cerca posible de la calle de acceso (llantera Michelin).</div></div>
+        <div class="imp" style="background:#005ab2"><div class="k" style="color:#bfeaea">Unidades de enlace</div><div class="v" style="font-size:14px">Camionetas <b style="color:#fff">con distintivo</b> en viajes constantes: de la parada al acceso y de regreso a la lateral, para ciudadanía y empleados.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · ACCESO</div>
+</div>
+
+<!-- 7 ATENCION · LOGISTICA OPERATIVA (CAM BLOQUE) -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Logística operativa · CAM BLOQUE</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <div class="hourbox">
+      <div class="h"><div class="k">Lunes a viernes</div><div class="v">8:15 – 15:30 h</div></div>
+      <div class="h"><div class="k">Sábados</div><div class="v">9:00 – 14:00 h</div></div>
+      <div class="h" style="background:#254185"><div class="k">Distribución</div><div class="v" style="font-size:15px">Planta baja y nivel 1</div></div>
+    </div>
+    <div class="two" style="height:auto">
+      <div class="lc">
+        <h4><span class="b"></span>Espacio y flujo</h4>
+        <ul>
+          <li>Ocupar <b>planta baja</b>; solo de ser necesario otros pisos (p. ej. CAT 070).</li>
+          <li>Reservar las <b>3 filas de estacionamiento</b> cercanas al acceso para la ciudadanía (no empleados).</li>
+          <li>Módulo de <b>filtro y toma de turno</b> previo al ingreso de trámites.</li>
+        </ul>
+      </div>
+      <div class="lc">
+        <h4><span class="b"></span>Montaje y equipo</h4>
+        <ul>
+          <li>Traslado de <b>sillería, mobiliario y equipo</b> de Centro Cívico a BLOQUE (apoyo de todas las áreas).</li>
+          <li>Cada área aporta el <b>cómputo, impresoras, escáner y teléfonos</b> que necesite; se proveen los mínimos.</li>
+          <li><b>Instalación eléctrica y de red</b> según espacios; mobiliario con Control Patrimonial.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="instbox">Objetivo: montar un <b>Centro de Atención Zona Norte</b> funcional en BLOQUE antes del 13 de julio, con la misma capacidad de atención presencial que hoy se ofrece en Centro Cívico.</div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · OPERACIÓN</div>
+</div>
+
+<!-- 8 ATENCION · LAYOUT LOBBY -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Acomodo de ventanillas · equipo BLOQUE</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body" style="top:96px;bottom:44px">
+    <div style="height:100%;border-radius:14px;overflow:hidden;border:2px solid #254185;background:#f7f9fc;display:flex;align-items:center;justify-content:center">
+      <img src="Layout-Lobby-Atencion-Ciudadana.png" style="width:100%;height:100%;object-fit:contain">
+    </div>
+    <div style="position:absolute;right:14px;bottom:14px;background:#fff;border:1.5px solid #254185;border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:11px;box-shadow:0 5px 16px rgba(0,0,0,.16)">
+      <img src="qr-tour-bloque.png" style="width:78px;height:78px;display:block">
+      <div style="font-size:12.5px;color:#254185;font-weight:800;line-height:1.25;max-width:150px">Recorrido virtual 360°<br><span style="font-weight:500;color:#5a6273;font-size:11px">Escanea para recorrer el lobby real de BLOQUE</span></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · LAYOUT</div>
+</div>
+
+<!-- 9 ATENCION · REQUERIMIENTOS POR SECRETARIA -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Ventanillas y equipo por secretaría</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <span class="chip">15 ventanillas de 6 secretarías + 070 · ventanilla única en planta baja</span>
+    <table class="req">
+      <tr><th>Secretaría</th><th>Espacios de atención</th><th>Equipo requerido por posición</th><th class="c">Equipo</th></tr>
+      <tr><td class="sec">Atención Ciudadana</td><td>Módulo de información · 2 ventanillas de ingreso · 1 de respuestas · 1 de promotores · módulo de filtro · 2 cajeros inteligentes · 070 (10 pos.) · supervisión</td><td class="eq">Cómputo, impresoras, escáneres y teléfonos por posición · 2 cajeros · 10 líneas 070</td><td class="c"><span class="st si">Sí</span></td></tr>
+      <tr><td class="sec">Finanzas</td><td>1 ventanilla gestiones internas · 2 ventanillas de Catastro · unidad móvil de cajeros</td><td class="eq">3 computadoras, 3 impresoras, teléfono · toma eléctrica para unidad móvil</td><td class="c"><span class="st si">Sí</span></td></tr>
+      <tr><td class="sec">Desarrollo Urbano</td><td>6 espacios de análisis técnico (mesas altas para planos)</td><td class="eq">6 computadoras, red, <b>VPN Siebel</b>, multifuncional, escáner, teléfono</td><td class="c"><span class="st parc">Solo cómputo</span></td></tr>
+      <tr><td class="sec">Servicios Públicos</td><td>2 ventanillas (residuos · poda y derribo)</td><td class="eq">2 computadoras con intranet/internet/SIM, 2 impresoras, teléfono</td><td class="c"><span class="st no">No</span></td></tr>
+      <tr><td class="sec">Desarrollo Económico</td><td>3 ventanillas (apertura, renovación y baja de licencias)</td><td class="eq">3 computadoras con red del municipio, 3 impresoras, 3 escáneres, teléfono</td><td class="c"><span class="st no">No</span></td></tr>
+      <tr><td class="sec">Ayuntamiento</td><td>1 ventanilla (constancias de residencia)</td><td class="eq">1 computadora con intranet/internet/SIM, 1 impresora, teléfono</td><td class="c"><span class="st no">No</span></td></tr>
+    </table>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · REQUERIMIENTOS</div>
+</div>
+
+<!-- NUEVA · SEMAFORO PRIORIDADES -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Prioridad de instalación · semáforo de ventanillas</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <span class="chip">Qué se instala primero, qué se programa y qué entra en segunda etapa</span>
+    <div class="sem">
+      <div class="col r">
+        <div class="hd"><span class="dot"></span><span class="t">Urgente · primero<small>Alto flujo, sensibilidad ciudadana, trámites prioritarios</small></span></div>
+        <ul>
+          <li>Información, filtro y toma de turno<span>Primer contacto, ordena todo el flujo</span></li>
+          <li>Atención Ciudadana: ingreso y respuestas<span>Mayor volumen diario</span></li>
+          <li>Finanzas y Catastro<span>Pagos y plazos, alta sensibilidad</span></li>
+          <li>Cajeros inteligentes (2)<span>Recaudación, descargan ventanillas</span></li>
+          <li>070 · atención telefónica<span>Servicio continuo, no puede parar</span></li>
+        </ul>
+        <div class="cr">Sin estas, no arranca la operación.</div>
+      </div>
+      <div class="col y">
+        <div class="hd"><span class="dot"></span><span class="t">Intermedio · después de las críticas<small>Importantes, flujo medio o dependen de infraestructura</small></span></div>
+        <ul>
+          <li>Desarrollo Urbano (6 mesas técnicas)<span>Requiere VPN Siebel y red</span></li>
+          <li>Desarrollo Económico (licencias)<span>Flujo medio, trámite programable</span></li>
+          <li>Servicios Públicos (residuos, poda)<span>Canalizable por App Ciudad</span></li>
+          <li>Promotores<span>Apoyo, no bloquea la atención</span></li>
+        </ul>
+        <div class="cr">Entran al resolver las urgentes.</div>
+      </div>
+      <div class="col g">
+        <div class="hd"><span class="dot"></span><span class="t">Siguientes 15 días<small>Complementarias, piloto o digitalización asistida</small></span></div>
+        <ul>
+          <li>Ayuntamiento (constancias)<span>Bajo volumen</span></li>
+          <li>Oficialía de Partes y copiado<span>Servicio de soporte</span></li>
+          <li>Supervisión<span>Puede ir en otro nivel</span></li>
+          <li>Digitalización asistida / piloto en línea<span>Reduce filas a mediano plazo</span></li>
+        </ul>
+        <div class="cr">Segunda etapa, hasta dos semanas.</div>
+      </div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · PRIORIDADES</div>
+</div>
+
+<!-- NUEVA · DISENO OPERATIVO -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Diseño operativo del montaje · planta baja</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <span class="chip">No basta con poner escritorios: se requiere un diseño operativo completo</span>
+    <div class="ops">
+      <div class="opg"><h4><span class="n">1</span>Espacio y capacidad</h4><div class="tags"><span>Medidas exactas de planta baja</span><span>Cuántas ventanillas caben</span><span>Accesos y salidas</span><span>Espacio para unifilas</span><span>Sillas de espera</span></div></div>
+      <div class="opg"><h4><span class="n">2</span>Infraestructura</h4><div class="tags"><span>Contactos eléctricos</span><span>Red / internet</span><span>Toma turnos</span><span>Pantalla / sistema de turnos</span><span>Señalética</span></div></div>
+      <div class="opg"><h4><span class="n">3</span>Flujo y experiencia</h4><div class="tags"><span>Área de primer contacto</span><span>Adultos mayores y discapacidad</span><span>Rutas de evacuación</span><span>Flujo: entrada → espera → atención → salida</span></div></div>
+      <div class="opg"><h4><span class="n">4</span>Capacidad operativa</h4><div class="tags"><span>Personas operando por ventanilla</span><span>Afluencia: 200–400 ciudadanos/día</span><span>Aforo y tiempos de atención</span></div></div>
+    </div>
+    <div class="instbox" style="margin-top:15px">El <b>equipo BLOQUE acomoda las ventanillas sobre el plano de planta baja</b> aplicando estos criterios. El aforo, la evacuación y los tiempos se validan en sitio con Protección Civil.</div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · DISEÑO OPERATIVO</div>
+</div>
+
+<!-- 10 ATENCION · LISTA DE REQUERIMIENTOS -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Requerimientos: mobiliario, equipo, eléctrico y personal</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <span class="chip">Lista consolidada para el montaje del Centro de Atención en planta baja</span>
+    <div class="req4">
+      <div class="rq m"><div class="h"><span class="ic">🪑</span>Mobiliario</div><ul>
+        <li><b>15</b> escritorios / módulos de ventanilla</li>
+        <li><b>15</b> sillas de empleado + <b>15</b> de ciudadano</li>
+        <li>Barra alta de información + 2 sillas altas</li>
+        <li><b>6</b> mesas altas (Desarrollo Urbano) + sillas</li>
+        <li><b>56</b> sillas de espera (24+32) + <b>unifilas</b></li>
+        <li>Señalética y directorio de módulos</li>
+      </ul></div>
+      <div class="rq e"><div class="h"><span class="ic">🖥️</span>Equipo</div><ul>
+        <li>Cómputo, impresora, escáner y teléfono por posición</li>
+        <li><b>2</b> cajeros inteligentes + <b>1</b> unidad móvil</li>
+        <li><b>10</b> líneas 070</li>
+        <li><b>Toma de turnos</b> + pantalla de turnos</li>
+        <li>Multifuncional y escáner (Desarrollo Urbano)</li>
+      </ul></div>
+      <div class="rq el"><div class="h"><span class="ic">🔌</span>Eléctrico y red</div><ul>
+        <li>Contactos eléctricos por cada posición</li>
+        <li>Toma eléctrica para la unidad móvil</li>
+        <li>Red / internet e intranet municipal</li>
+        <li><b>VPN Siebel</b> para Desarrollo Urbano</li>
+        <li>Capacidad para ~15 ventanillas + 070 + cajeros</li>
+      </ul></div>
+      <div class="rq p"><div class="h"><span class="ic">👥</span>Personal</div><ul>
+        <li><b>1</b> operador por ventanilla (15)</li>
+        <li>Información (2) + filtro (1)</li>
+        <li><b>10</b> posiciones 070 + supervisión</li>
+        <li>Estimado <b>~29 personas</b> por turno</li>
+        <li style="color:#8a94a6;font-weight:500">A confirmar con cada área y RRHH</li>
+      </ul></div>
+    </div>
+    <div class="dotbox" style="margin-top:14px">
+      <h4>Áreas que requieren dotación de equipo</h4>
+      <p>Servicios Públicos, Desarrollo Económico, Ayuntamiento y Oficialía de Partes no cuentan con equipo; Desarrollo Urbano solo tiene cómputo. El resto ya cuenta con lo suyo.</p>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · LISTA DE REQUERIMIENTOS</div>
+</div>
+
+<!-- NUEVA · OPERACION SERVICIOS Y AFLUENCIA (correo Operaciones BLOQUE) -->
+<div class="slide" data-sec="Atención">
+  <div class="band"><h2>Operación, servicios y afluencia</h2></div>
+  <div class="tag">FRENTE 2 ·<br><b>ATENCIÓN CIUDADANA</b></div>
+  <div class="body">
+    <span class="chip">Propuesta de Operaciones BLOQUE · derivada de la reunión del 3 de julio con Atención Ciudadana</span>
+    <div class="cards">
+      <div class="mcard acc"><div class="v">200–400</div><div class="k">Ciudadanos por día · afluencia estimada</div></div>
+      <div class="mcard"><div class="v">56</div><div class="k">Sillas de espera · 24 Atención + 32 Finanzas</div></div>
+      <div class="mcard"><div class="v">24 h</div><div class="k">Vigilancia SSP para el Recaudamóvil (zona externa)</div></div>
+      <div class="mcard"><div class="v">PB + N1</div><div class="k">Ocupa planta baja y nivel 1</div></div>
+    </div>
+    <div class="two" style="height:auto;margin-top:16px">
+      <div class="lc"><h4><span class="b"></span>Servicios a reforzar</h4><ul>
+        <li><b>Seguridad privada</b> y <b>limpieza</b> por la afluencia diaria.</li>
+        <li><b>Vigilancia SSP 24 h</b> para el Recaudamóvil en zona externa.</li>
+        <li><b>Insumos sanitarios:</b> papel, toalla y jabón líquido.</li>
+        <li><b>Infraestructura eléctrica y de datos</b> con la intranet municipal.</li>
+      </ul></div>
+      <div class="lc"><h4><span class="b"></span>Mobiliario</h4><ul>
+        <li>La <b>mayor parte ya está</b> disponible.</li>
+        <li>BLOQUE aporta <b>20 sillas de espera</b> + <b>4 periqueras</b> (Desarrollo Urbano).</li>
+        <li>Lo faltante se debe <b>adquirir</b> (BLOQUE no lo tiene) → entra a presupuesto.</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 2 · OPERACIÓN</div>
+</div>
+
+<!-- 11 RRHH PANORAMA -->
+<div class="slide" data-sec="RRHH">
+  <div class="band"><h2>VPN y home office · Panorama RRHH</h2></div>
+  <div class="tag">FRENTE 3 ·<br><b>RECURSOS HUMANOS</b></div>
+  <div class="body">
+    <span class="chip">Personal de Centro Cívico durante la adecuación vial (desde el 13 de julio)</span>
+    <div class="cards">
+      <div class="mcard"><div class="v">1,527</div><div class="k">Personal en Centro Cívico</div></div>
+      <div class="mcard"><div class="v">1,395</div><div class="k">Permanecen en oficina (Centro Cívico)</div></div>
+      <div class="mcard acc"><div class="v">146</div><div class="k">Pasan a home office · con su equipo de cómputo</div></div>
+      <div class="mcard"><div class="v">59</div><div class="k">Requieren VPN para el home office</div></div>
+    </div>
+    <div class="flow" style="margin:20px 0 6px">
+      <div class="node" style="height:104px"><div class="ic">💻</div><div class="t">Laptop del Municipio</div><div class="s">146 en casa</div></div>
+      <div class="arrow"><span class="lab">cifrado</span></div>
+      <div class="node vpn" style="height:104px"><div class="ic">🔒</div><div class="t">VPN municipal</div><div class="s">59 equipos</div></div>
+      <div class="arrow"><span class="lab">autenticado</span></div>
+      <div class="node" style="height:104px"><div class="ic">🗄️</div><div class="t">Sistemas internos</div><div class="s">Intranet · Siebel · SIM</div></div>
+    </div>
+    <div class="instbox">El <b>reloj checador se suspende desde el 13 de julio</b>. El personal de home office se lleva su equipo de cómputo a casa. La <b>SIT</b> organiza las rutas de atención a los edificios municipales según la zona de residencia del personal y consolida el listado de los 59 equipos que requieren VPN.</div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 3 · RRHH</div>
+</div>
+
+<!-- 12 RRHH MEDIDAS Y CALENDARIO -->
+<div class="slide" data-sec="RRHH">
+  <div class="band"><h2>Medidas y calendario · RRHH</h2></div>
+  <div class="tag">FRENTE 3 ·<br><b>RECURSOS HUMANOS</b></div>
+  <div class="body">
+    <div class="two" style="height:auto">
+      <div class="lc">
+        <h4><span class="b"></span>Medidas por dependencia</h4>
+        <ul>
+          <li><b>Atención Ciudadana</b> y <b>Desarrollo Urbano</b>: el personal de atención se reasigna a <b>BLOQUE</b> y Delegaciones Municipales.</li>
+          <li><b>Órgano Interno de Control</b> y <b>Desarrollo Social</b>: salida a home office de forma escalonada.</li>
+          <li><b>Desarrollo Económico</b>: guardias en sede + 1 vehículo para actividades de campo.</li>
+          <li><b>Secretaría Particular</b>: horarios flexibles según la agenda del Alcalde.</li>
+          <li><b>Seguridad Pública</b> y <b>Movilidad</b>: pago de horas extra.</li>
+          <li><b>DIF</b>: jornadas en zonas no afectadas. Delegaciones: sin home office.</li>
+        </ul>
+      </div>
+      <div class="lc">
+        <h4><span class="b"></span>Calendario y pendientes</h4>
+        <ul>
+          <li><b>Lun 6 jul</b>: levantamiento del personal de dependencias y paramunicipales (dato final).</li>
+          <li><b>Mié 8 jul</b>: acuerdo con Celestino para reagendar/reubicar prestaciones (paquetes escolares, lentes, estímulos).</li>
+          <li><b>13 jul</b>: se suspende el reloj checador y arranca el esquema.</li>
+          <li><b>20 al 31 jul</b>: periodo vacacional (120 empleados autorizados).</li>
+          <li>Listado de home office → <b>Transportes</b> (retiro de vehículos institucionales).</li>
+          <li>Listado de <b>VPN (59)</b> → <b>SIT</b>. Los cursos de capacitación se reagendan fuera de la zona de obras.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 3 · RRHH</div>
+</div>
+
+<!-- NUEVA · HOME OFFICE MOVILIDAD -->
+<div class="slide" data-sec="RRHH">
+  <div class="band"><h2>Home office como eficiencia operativa y movilidad</h2></div>
+  <div class="tag">FRENTE 3 ·<br><b>RECURSOS HUMANOS</b></div>
+  <div class="body">
+    <span class="chip">Impacto del home office en movilidad y estacionamiento del Centro Cívico</span>
+    <div class="formula">
+      <div class="fbox"><div class="v">1,527</div><div class="k">Empleados en Centro Cívico</div><div class="op">×</div></div>
+      <div class="fbox"><div class="v cy">9.6%</div><div class="k">Van a home office (146)</div><div class="op">=</div></div>
+      <div class="fbox"><div class="v">146</div><div class="k">Fuera de operación presencial</div><div class="op">×</div></div>
+      <div class="fbox"><div class="v rd">60%</div><div class="k">Usa vehículo particular<span class="edit">EDITABLE</span></div><div class="op">=</div></div>
+      <div class="fbox"><div class="v">~88</div><div class="k">Vehículos fuera de circulación</div><div class="op">×2</div></div>
+      <div class="fbox"><div class="v cy">~176</div><div class="k">Viajes diarios menos (ida y vuelta)</div></div>
+    </div>
+    <div class="two" style="height:auto;margin-top:17px">
+      <div class="lc"><h4><span class="b"></span>Qué mueve</h4><ul>
+        <li>~88 <b>autos menos</b> buscando estacionamiento cada día en el Centro Cívico.</li>
+        <li>~176 <b>viajes diarios</b> menos sobre la zona de obra.</li>
+        <li>Menos presión de cajones y de acceso durante los cierres.</li>
+      </ul></div>
+      <div class="lc"><h4><span class="b"></span>Fórmula (editable)</h4><ul>
+        <li>Empleados × % home office = fuera de operación presencial.</li>
+        <li>Home office × % con vehículo = autos fuera de circulación.</li>
+        <li>Autos × 2 = viajes diarios reducidos (ida y vuelta).</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 3 · MOVILIDAD</div>
+</div>
+
+<!-- NUEVA · HOME OFFICE PROPUESTA E IMPLICACIONES -->
+<div class="slide" data-sec="RRHH">
+  <div class="band"><h2>Home office: propuesta e implicaciones</h2></div>
+  <div class="tag">FRENTE 3 ·<br><b>RECURSOS HUMANOS</b></div>
+  <div class="body">
+    <div class="imp" style="margin-bottom:16px"><div class="k">La propuesta</div><div class="v" style="font-size:16px">Habilitar <b>home office con VPN</b> para el personal administrativo durante los cierres (146 a casa, 59 con VPN) y evaluarlo como <b>política permanente de eficiencia y movilidad</b>.</div></div>
+    <div class="two" style="height:auto">
+      <div class="lc"><h4><span class="b"></span>Implicaciones a favor</h4><ul>
+        <li><b>Movilidad:</b> ~88 autos y ~176 viajes menos al día sobre la zona de obra.</li>
+        <li><b>Estacionamiento:</b> liberación de cajones en el Centro Cívico.</li>
+        <li><b>Operación:</b> menos saturación y continuidad del servicio durante los cierres.</li>
+        <li><b>Institucional:</b> base para un esquema híbrido medible a futuro.</li>
+      </ul></div>
+      <div class="lc"><h4><span class="b"></span>Implicaciones a resolver</h4><ul>
+        <li><b>Seguridad:</b> acceso por VPN con control, permisos y bitácora de datos municipales.</li>
+        <li><b>Padrón y equipo:</b> cerrar el levantamiento (6-jul), equipo en casa y licencias de VPN.</li>
+        <li><b>Control:</b> reloj checador suspendido, definir esquema alterno de asistencia y metas (KPIs).</li>
+        <li><b>Presencial:</b> definir qué servicios no migran y se quedan en ventanilla.</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">FRENTE 3 · PROPUESTA</div>
+</div>
+
+<!-- NUEVA · OPORTUNIDAD SIT -->
+<div class="slide" data-sec="Estrategia">
+  <div class="band"><h2>Una oportunidad para modernizar la atención</h2></div>
+  <div class="tag">SECRETARÍA DE<br><b>INNOVACIÓN Y TECNOLOGÍA</b></div>
+  <div class="body">
+    <div class="lead-strat">No estamos solamente reorganizando espacios; estamos <b>rediseñando la atención ciudadana</b>. La oportunidad es transformar una necesidad logística en una <b>política institucional de modernización</b>.</div>
+    <div class="strat">
+      <div class="scard"><div class="ic">🎯</div><div class="t">Rediseñar la atención desde la experiencia del ciudadano</div></div>
+      <div class="scard"><div class="ic">🎟️</div><div class="t">Toma de turnos, flujos claros y medición de tiempos</div></div>
+      <div class="scard"><div class="ic">📉</div><div class="t">Reducir filas y saturación en ventanillas</div></div>
+      <div class="scard"><div class="ic">📊</div><div class="t">Usar datos para decidir prioridades</div></div>
+      <div class="scard"><div class="ic">🚗</div><div class="t">Home office ligado a movilidad y eficiencia</div></div>
+      <div class="scard"><div class="ic">🤝</div><div class="t">Trabajo en conjunto de las áreas del Municipio</div></div>
+      <div class="scard"><div class="ic">🧭</div><div class="t">Orden y continuidad del servicio durante la obra</div></div>
+      <div class="scard"><div class="ic">🙌</div><div class="t">Mejor experiencia para el ciudadano</div></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">ESTRATEGIA · SIT</div>
+</div>
+
+<!-- SOLICITUDES HOY -->
+<div class="slide" data-sec="Cierre">
+  <div class="band"><h2>Qué pedimos hoy en la reunión</h2></div>
+  <div class="tag">PLAN DE ACCIÓN<br><b>TREN MX–QRO</b></div>
+  <div class="body">
+    <span class="chip">Autorizaciones para arrancar el montaje antes del 13 de julio</span>
+    <div class="two" style="height:auto">
+      <div class="lc"><h4><span class="b"></span>Autorizaciones y validaciones</h4><ul>
+        <li>El <b>equipo BLOQUE</b> presenta el <b>acomodo de ventanillas</b> sobre el plano de planta baja.</li>
+        <li><b>Validación de Protección Civil</b> (accesos, evacuación, aforo).</li>
+        <li>Definición de <b>ventanillas prioritarias</b> por semáforo.</li>
+        <li>Vo. Bo. a la <b>reasignación de 161 unidades</b> (07:00–16:00) y gestión de paradas con <b>AMEQ</b>.</li>
+      </ul></div>
+      <div class="lc"><h4><span class="b"></span>Mobiliario, red y responsables</h4><ul>
+        <li>Autorización de <b>mobiliario</b>: escritorios/módulos, sillas, unifilas, toma turnos, pantallas y señalética.</li>
+        <li><b>Red e internet</b> y contactos eléctricos en planta baja.</li>
+        <li><b>Personal operativo por ventanilla</b> y datos de RRHH de home office.</li>
+        <li>Responsable de <b>adecuaciones</b> y responsable de <b>comunicación institucional</b>.</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="qro"><img src="logo-muni-color.svg" alt="Municipio de Querétaro" style="height:30px;display:block;margin:0 auto"></div>
+  <div class="pill">SOLICITUDES · HOY</div>
+</div>
+
+<!-- ENTREGABLES LUNES -->
+<div class="slide" data-sec="Cierre">
+  <div class="close">
+    <img src="logo-muni-white.svg" alt="Municipio de Querétaro" style="position:absolute;top:44px;right:70px;height:44px">
+    <div class="kick" style="color:#2A9EDA;font-weight:700;letter-spacing:2px;font-size:14px;text-transform:uppercase">Entregables para el lunes</div>
+    <h1>De la decisión al montaje</h1>
+    <p>Con las autorizaciones de hoy, el lunes cerramos el paquete operativo completo:</p>
+    <div class="asks" style="grid-template-columns:1fr 1fr;max-width:960px">
+      <div class="a"><b>DISEÑO</b><p>Plano final de planta baja · semáforo definitivo de ventanillas · flujo operativo validado.</p></div>
+      <div class="a"><b>MOBILIARIO Y COSTO</b><p>Listado de mobiliario requerido · cotización / estimación de costos.</p></div>
+      <div class="a"><b>OPERACIÓN</b><p>Personas por ventanilla · propuesta de toma de turnos · datos de RRHH integrados.</p></div>
+      <div class="a"><b>IMPLEMENTACIÓN</b><p>Narrativa institucional validada · calendario rojo inmediato / amarillo intermedio / verde 15 días.</p></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+// build dependency bars
+const DEP=[["Secretaría de Gobierno",40],["Secretaría de Administración",24],["Servicios Públicos Municipales",12],["Desarrollo Social",12],["Desarrollo Urbano",10],["Secretaría de Finanzas",8],["Jefatura de Gabinete",8],["Obras Públicas Municipales",5],["Secretaría de Movilidad",5],["Secretaría del Ayuntamiento",4],["Planeación y Part. Ciudadana",4],["Secretaría del Deporte",4],["Órgano Interno de Control",3],["Secretaría Particular",3],["Atención Ciudadana",3],["Medio Ambiente",3],["Desarrollo Económico",3],["Secretaría de Turismo",3],["Bienestar Animal",2],["Secretaría de la Mujer",2],["Secretaría de Cultura",2],["Innovación y Tecnología",1]];
+{let h="";const max=40;for(const [n,v] of DEP){const w=(v/max*100).toFixed(1);const big=v>=12?' big':'';h+=`<div class="bar${big}"><div class="lb"><span>${n}</span><b>${v}</b></div><div class="track"><div class="fill" style="width:${w}%"></div></div></div>`;}
+const b=document.getElementById('bars');if(b)b.innerHTML=h;}
+
+// ---- navigator ----
+const stage=document.getElementById('stage');
+const slides=[...document.querySelectorAll('#deck .slide')];
+slides.forEach(s=>stage.appendChild(s));
+let i=0;
+function fit(){const s=Math.min(window.innerWidth/1280,window.innerHeight/720)*0.94;document.documentElement.style.setProperty('--s',s.toFixed(4));}
+window.addEventListener('resize',fit);fit();
+const secs=[...new Set(slides.map(s=>s.dataset.sec))];
+const dots=document.getElementById('dots');
+dots.innerHTML=secs.map(sc=>`<div class="sec" data-sec="${sc}"><span class="ic"></span>${sc}</div>`).join('');
+[...dots.children].forEach(d=>d.onclick=()=>{const t=slides.findIndex(s=>s.dataset.sec===d.dataset.sec);if(t>=0)go(t);});
+function go(n){slides[i].classList.remove('active','enter');i=Math.max(0,Math.min(slides.length-1,n));const cur=slides[i];cur.classList.add('active');void cur.offsetWidth;cur.classList.add('enter');
+  document.getElementById('counter').textContent=`${i+1} / ${slides.length}`;
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  [...dots.children].forEach(d=>d.classList.toggle('on',d.dataset.sec===cur.dataset.sec));}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(i+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(i-1);
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+  else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}});
+go(0);
+</script>
+</body></html>

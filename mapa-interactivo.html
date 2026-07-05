@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estaciones de combustible · Tren Mx–Qro</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+#map{position:absolute;inset:0}
+.top{position:absolute;top:0;left:0;right:0;height:64px;z-index:1000;background:linear-gradient(90deg,#16224e,#243a7a);color:#fff;display:flex;align-items:center;padding:0 22px;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.top b{font-size:18px;font-weight:700}.top span{font-size:12px;color:#c7d2ea}
+.tag{margin-left:auto;font-weight:800;font-size:11px;text-align:right;line-height:1.2}.tag em{color:#F2A63B;font-style:normal;display:block;font-size:13px}
+.legend{position:absolute;bottom:20px;left:20px;z-index:1000;background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,.2);font-size:13px}
+.legend .row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #999}
+.r{background:#e03131}.g{background:#2f9e44}.o{background:#f2a63b}
+.note{position:absolute;bottom:20px;right:20px;z-index:1000;background:rgba(255,255,255,.94);border-radius:10px;padding:9px 14px;font-size:11.5px;color:#b06a34;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.leaflet-popup-content{font-size:13px}.leaflet-popup-content b{color:#16224e}
+</style></head>
+<body>
+<div class="top"><b>Estaciones de combustible · Proyecto Tren Mx–Qro</b><span>Puntos de recarga · zona Bernardo Quintana</span><div class="tag"><em>DIRECCIÓN DE TRANSPORTES</em>Querétaro con Futuro</div></div>
+<div id="map"></div>
+<div class="legend">
+  <div class="row"><span class="dot r"></span> Estación inhabilitada por la obra</div>
+  <div class="row"><span class="dot g"></span> Estación alterna operando</div>
+  <div class="row"><span class="dot o"></span> Obra Gobierno Federal (puente)</div>
+  <div class="row"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #111;display:inline-block"></span> Zona prioritaria · 27 colonias</div>
+  <div class="row"><span style="display:inline-block;width:18px;height:5px;background:#7b2d8e;border-radius:3px"></span> Línea del Tren Mx–Qro</div>
+  <div class="row"><span style="font-size:15px">🚆</span> Estación del tren</div>
+</div>
+<div class="note">Línea del tren: trazo REAL sobre las vías existentes (OpenStreetMap · corredor CPKC/Ferromex). Estaciones georreferenciadas por su ubicación oficial, validables en sitio.</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map',{zoomControl:true}).setView([20.593,-100.389],14);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Esri'}).addTo(map);
+// ZONA PRIORITARIA (circunferencia de la presentación maestra · 27 colonias)
+const ZONA=L.circle([20.5875,-100.3762],{radius:2500,color:'#111',weight:3,fillColor:'#000',fillOpacity:0.05}).addTo(map);
+ZONA.bindPopup('<b>Zona prioritaria</b><br>27 colonias · centro en Pedregal de Querétaro (Bernardo Quintana × vías)');
+// LÍNEA DEL TREN (trazo REAL sobre las vías existentes · OpenStreetMap, corredor CPKC/Ferromex)
+const VIA_TRONCAL=[[20.601,-100.40877],[20.60152,-100.39523],[20.60168,-100.39168],[20.60234,-100.38601],[20.6033,-100.38125],[20.60365,-100.37726],[20.60365,-100.37526],[20.60315,-100.37225],[20.60304,-100.37099],[20.60321,-100.36973],[20.60382,-100.36815],[20.60422,-100.36688],[20.6043,-100.36565],[20.60405,-100.36382],[20.60358,-100.36248],[20.60236,-100.3599],[20.60199,-100.35861],[20.60182,-100.35707],[20.60203,-100.3552],[20.60285,-100.35314],[20.60483,-100.34982],[20.60558,-100.34826],[20.60632,-100.34461],[20.60734,-100.34257],[20.60915,-100.33994],[20.60988,-100.33793],[20.60998,-100.33443],[20.61024,-100.33232],[20.61092,-100.33058],[20.61186,-100.32925],[20.61589,-100.32616],[20.61741,-100.32428],[20.61859,-100.32133],[20.61984,-100.31907],[20.62142,-100.31762],[20.62307,-100.31684],[20.62619,-100.31577],[20.62782,-100.31446],[20.62944,-100.31259],[20.63053,-100.31074],[20.63105,-100.30894],[20.63106,-100.30668],[20.63028,-100.30046],[20.62941,-100.29837],[20.62682,-100.29294],[20.62647,-100.29143],[20.62655,-100.28912],[20.62822,-100.28148],[20.62878,-100.27423],[20.62886,-100.2711],[20.62864,-100.26883],[20.62496,-100.25301],[20.62418,-100.25035],[20.62294,-100.24705],[20.62191,-100.24514],[20.62042,-100.24324],[20.60498,-100.2289],[20.5826,-100.20823],[20.55426,-100.18212],[20.5507,-100.17805],[20.54632,-100.17269],[20.54282,-100.16837],[20.54225,-100.16766]];
+const VIA_ORIENTE=[[20.6034,-100.362],[20.60274,-100.36098],[20.60203,-100.35928],[20.6018,-100.35761],[20.60187,-100.35575],[20.60224,-100.35407],[20.60276,-100.3529],[20.60398,-100.35053],[20.60459,-100.34949],[20.6057,-100.34729],[20.60627,-100.34441],[20.60803,-100.34151],[20.60942,-100.33906],[20.60991,-100.33692],[20.6098,-100.33366],[20.60973,-100.3311],[20.61038,-100.32985],[20.6124,-100.32803],[20.61505,-100.32654],[20.61695,-100.32465],[20.61772,-100.32262],[20.61778,-100.32146],[20.61801,-100.32004],[20.61895,-100.31865],[20.62204,-100.31692],[20.62335,-100.31567],[20.62476,-100.31479],[20.62692,-100.3144],[20.62816,-100.31368],[20.62981,-100.31122],[20.63006,-100.31077],[20.63024,-100.31032],[20.6304,-100.30971],[20.63049,-100.30919],[20.63053,-100.30851],[20.63051,-100.30768],[20.63032,-100.30364],[20.63025,-100.30324],[20.63012,-100.30282],[20.62965,-100.30146],[20.62958,-100.30117],[20.62954,-100.30087],[20.62952,-100.30054],[20.62952,-100.3002],[20.62956,-100.29985],[20.62964,-100.2995],[20.62986,-100.29882],[20.6305,-100.29703],[20.63069,-100.29642],[20.63084,-100.29556],[20.63126,-100.2909],[20.63158,-100.28714],[20.63175,-100.28413],[20.63145,-100.28068],[20.6288,-100.26911],[20.62727,-100.2624],[20.62698,-100.26099],[20.62662,-100.25961],[20.62461,-100.25113],[20.62277,-100.24355],[20.62062,-100.23445],[20.6171,-100.2195],[20.61469,-100.20974],[20.61373,-100.20731],[20.61261,-100.20524],[20.61168,-100.20371],[20.60298,-100.18945],[20.59723,-100.17997],[20.59592,-100.17783],[20.57925,-100.15041]];
+[VIA_TRONCAL,VIA_ORIENTE].forEach(v=>{
+  L.polyline(v,{color:'#7b2d8e',weight:6,opacity:.95}).addTo(map).bindPopup('<b>Corredor ferroviario Tren México–Querétaro</b><br>Trazo real sobre las vías existentes (OpenStreetMap · corredor CPKC/Ferromex). El puente de la obra cruza estas vías.');
+  L.polyline(v,{color:'#fff',weight:2,opacity:.9,dashArray:'2 10'}).addTo(map);
+});
+// ESTACIONES DEL TREN
+function estacion(lat,lng,nombre,det){
+  const ic=L.divIcon({className:'',html:'<div style="background:#7b2d8e;color:#fff;border:3px solid #fff;border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,.4)">🚆</div>',iconSize:[34,34],iconAnchor:[17,17]});
+  L.marker([lat,lng],{icon:ic}).addTo(map).bindPopup('<b>Estación '+nombre+'</b><br>'+det);
+}
+estacion(20.6013,-100.3968,'La Corregidora','Patio de maniobras CPKC, entre el Parque Alcanfores Norte y la Antigua Estación (Centro Cultural del Ferrocarril), Centro Histórico. Se construye sobre las vías; el puente de la obra cruza este mismo corredor.');
+estacion(20.62655,-100.28912,'Querétaro Central','Principal · El Marqués · conexión con el Tren Querétaro–San Luis Potosí');
+estacion(20.61168,-100.20371,'Aeropuerto (AIQ)','Paradero · Aeropuerto Intercontinental de Querétaro');
+function mk(lat,lng,color,name,status){
+  const m=L.circleMarker([lat,lng],{radius:11,color:'#fff',weight:2,fillColor:color,fillOpacity:1}).addTo(map);
+  m.bindPopup('<b>'+name+'</b><br>'+status);
+  return m;
+}
+// OBRA (naranja) — puente sobre las vías, Bernardo Quintana
+mk(20.5935,-100.3865,'#f2a63b','Obra Gobierno Federal','Ampliación del puente sobre las vías · Blvd. Bernardo Quintana');
+// INHABILITADAS (rojo)
+mk(20.6015,-100.4045,'#e03131','Parques','Inhabilitada por la obra · Av. 5 de Febrero / Parques');
+mk(20.5905,-100.3985,'#e03131','Universidad','Inhabilitada por la obra · Av. Universidad');
+mk(20.5875,-100.3915,'#e03131','Arquitos','Inhabilitada por la obra · Arquitos / Bernardo Quintana');
+mk(20.5865,-100.3815,'#e03131','Carretas','Inhabilitada por la obra · Carretas / Prol. Bernardo Quintana');
+mk(20.5920,-100.3835,'#e03131','Los Arcos','Inhabilitada por la obra · Los Arcos / Acueducto');
+// ALTERNAS OPERANDO (verde) · horario 07:00–16:00
+mk(20.5555,-100.4265,'#2f9e44','Corregidora','Alterna operando');
+mk(20.6060,-100.4180,'#2f9e44','5 de Febrero','Alterna operando');
+mk(20.5960,-100.3925,'#2f9e44','Pasteur','Alterna operando');
+mk(20.5900,-100.4020,'#2f9e44','La República','Alterna operando');
+mk(20.5975,-100.3625,'#2f9e44','Milenio','Alterna operando');
+mk(20.6120,-100.4230,'#2f9e44','Central de Abastos','Alterna operando');
+mk(20.6790,-100.4225,'#2f9e44','Antea','Alterna operando');
+mk(20.6010,-100.4230,'#2f9e44','Bellavista','Alterna operando');
+mk(20.5590,-100.4110,'#2f9e44','Tecnológico','Alterna operando');
+mk(20.5920,-100.3920,'#2f9e44','Centro Histórico','Alterna operando');
+mk(20.5720,-100.3760,'#2f9e44','Centro Sur','Alterna operando');
+mk(20.5760,-100.4085,'#2f9e44','Junípero','Alterna operando');
+</script>
+</body></html>
