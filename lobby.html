@@ -69,7 +69,7 @@ text{pointer-events:none}
   </div>
   <div class="kpis">
     <div class="kpi"><span class="v">10</span><span class="l">módulos de atención</span></div>
-    <div class="kpi"><span class="v">13</span><span class="l">ventanillas de trámite</span></div>
+    <div class="kpi accent"><span class="v">16</span><span class="l">escritorios de 1.56 m · tope 8 ventanillas en PB</span></div>
     <div class="kpi accent"><span class="v">56</span><span class="l">sillas de espera (32 + 24)</span></div>
     <div class="kpi"><span class="v">2</span><span class="l">cajeros inteligentes</span></div>
     <div class="kpi accent"><span class="v">200–400</span><span class="l">visitas / día estimadas</span></div>
@@ -91,7 +91,7 @@ text{pointer-events:none}
     </div>
   </div>
   <div class="foot">
-    Base: plano oficial CIC-ARQ-PB "Planta Baja BLOQUE" (Obras Públicas, oct 2022) + Lay Out de Atención Ciudadana (Operaciones BLOQUE, 5-jul). <b>Medidas propuestas, indicativas; a confirmar en sitio con Obras Públicas.</b> Toda la atención presencial en planta baja; el Recaudamóvil opera en zona externa con vigilancia SSP 24 h. · QUERÉTARO CON FUTURO
+    Base: plano oficial CIC-ARQ-PB "Planta Baja BLOQUE" + Lay Out de Atención Ciudadana (Operaciones BLOQUE). <b>Escritorios de 1.56 m (medida real del modelo instalado): tope de 8 ventanillas en planta baja.</b> Resto de medidas indicativas, ajustables en sitio. El 070 opera en Nivel 1 con barrera acústica; el Recaudamóvil en zona externa con SSP 24 h. · QUERÉTARO CON FUTURO
   </div>
 </div>
 
@@ -286,11 +286,11 @@ function dimV(y1,y2,x,label,off=-26){
 }
 dimH(0,44,0,"≈ 44.0 m (frente propuesto)",-30);
 dimV(0,26,0,"≈ 26.0 m (fondo)",-34);
-dimH(34.5,37.7,8.5,"10.0 m de ventanillas",-8);
+dimH(34.5,37.7,8.5,"escritorios de 1.56 m",-8);
 // pasillo central 3 m
 el("line",{x1:X(24),y1:Y(16),x2:X(24),y2:Y(23),stroke:COL.cyan,"stroke-width":1,"stroke-dasharray":"3 4",opacity:.6},gDim);
 txt(X(24)+6,Y(19),"pasillo 3.0 m",{"font-size":10,"font-weight":700,fill:COL.cyan,transform:`rotate(-90 ${X(24)+6} ${Y(19)})`},gDim);
-txt(1352,Y(0)-14,"Medidas propuestas · indicativas",{"text-anchor":"end","font-size":10,"font-style":"italic",fill:"#93a0b4"},gDim);
+txt(1352,Y(0)-14,"Escritorios 1.56 m (medida real) · resto indicativo",{"text-anchor":"end","font-size":10,"font-style":"italic",fill:"#93a0b4"},gDim);
 
 /* ---------- interactivity ---------- */
 const det=document.getElementById("det");
