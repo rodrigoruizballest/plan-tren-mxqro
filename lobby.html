@@ -171,27 +171,32 @@ seatBlock(28.2,13.2,4,6,"Espera 24",gSeat);
 txt(X(20.7),Y(9.4)-9,"ESPERA · 32 lugares",{"text-anchor":"middle","font-size":10.5,"font-weight":800,fill:COL.navy},gLab);
 txt(X(30.7),Y(13.2)-9,"ESPERA · 24 lugares",{"text-anchor":"middle","font-size":10.5,"font-weight":800,fill:COL.navy},gLab);
 
+/* ---------- banner de capacidad (autoritativo) ---------- */
+el("rect",{x:X(13.3),y:Y(4.6),width:L(20),height:L(2.35),rx:9,fill:"#eef3fb",stroke:COL.navy,"stroke-width":1.6},gLab);
+txt(X(23.3),Y(4.6)+21,"TOPE DE ATENCIÓN · 8 ventanillas + 3 en recepción = 11 posiciones",{"text-anchor":"middle","font-size":12,"font-weight":800,fill:COL.navy},gLab);
+txt(X(23.3),Y(4.6)+38,"1 escritorio de 1.56 m + 1 persona por ventanilla · 56 sillas de espera",{"text-anchor":"middle","font-size":10,"font-weight":600,fill:"#5a6a86"},gLab);
+
 /* ---------- modules ---------- */
 const MODS=[
  {id:"info",t:"Módulo de Información",s:"barra alta · 2 posiciones",x:3.5,y:2,w:6.2,h:2,c:COL.cyan,vent:"2 posiciones",eq:"si",
   det:["2 computadoras + teléfono","Orienta y direcciona al ciudadano al módulo correcto","Primer punto de contacto al entrar"]},
  {id:"filtro",t:"Módulo de Filtro",s:"revisión previa de trámites",x:17.5,y:23,w:5,h:1.7,c:COL.cyan,vent:"1 posición",eq:"si",
   det:["Laptop + teléfono","Revisión previa de requisitos antes de formarse","Reduce rebotes en ventanilla"]},
- {id:"ayto",t:"Ayuntamiento",s:"1 ventanilla",x:21.5,y:1.6,w:4,h:2.1,c:COL.ayto,vent:"1 ventanilla",eq:"no",
+ {id:"ayto",t:"Ayuntamiento",s:"constancias",x:21.5,y:1.6,w:4,h:2.1,c:COL.ayto,vent:"constancias de residencia",eq:"no",
   det:["Constancias de residencia","Requiere equipo de cómputo e impresión (adquisición)"]},
  {id:"ofic",t:"Oficialía de Partes",s:"+ copiado",x:25.7,y:1.6,w:4.9,h:2.1,c:COL.gray,vent:"1 posición",eq:"no",
   det:["Recepción de documentos oficiales","Servicio de copiado (proveedor externo)","Requiere mobiliario (adquisición)"]},
- {id:"recep",t:"Recepción",s:"Op. BLOQUE · gestiones",x:30.8,y:1.6,w:6.5,h:2.1,c:COL.gray,vent:"3 posiciones",eq:"si",
+ {id:"recep",t:"Recepción",s:"3 ventanillas · gestiones",x:30.8,y:1.6,w:6.5,h:2.1,c:COL.gray,vent:"3 ventanillas",eq:"si",
   det:["Recepción Des. Económico · Recepción BLOQUE · Op. BLOQUE","Correspondencia y gestiones internas"]},
  {id:"urbano",t:"Desarrollo Urbano",s:"6 mesas altas · revisión de planos",x:1.8,y:8.5,w:7,h:8.5,c:COL.purple,vent:"6 mesas altas",eq:"parc",
   det:["6 periqueras / mesas altas para análisis técnico de planos","VPN a Siebel (home-office seguro)","BLOQUE aporta 4 periqueras; falta cómputo"]},
- {id:"atencion",t:"Atención Ciudadana",s:"4 ventanillas",x:34.5,y:8.5,w:3.2,h:10,c:COL.navy,vent:"4 ventanillas",eq:"si",
-  det:["Revisión previa","Ingreso de trámites","Respuestas","Promotores","Es el frente principal del CAM"]},
- {id:"servpub",t:"Servicios Públicos",s:"2 ventanillas",x:5.5,y:20.4,w:6,h:2.1,c:COL.red,vent:"2 ventanillas",eq:"no",
+ {id:"atencion",t:"Atención Ciudadana",s:"8 ventanillas · esc. 1.56 m",x:34.5,y:8.5,w:3.2,h:10,c:COL.navy,vent:"8 ventanillas de atención",eq:"si",
+  det:["Banco de 8 ventanillas de atención (tope en planta baja)","1 escritorio de 1.56 m + 1 persona por ventanilla","Atienden ingreso de trámites, respuestas, promotores y las demás áreas","Es el frente principal del CAM"]},
+ {id:"servpub",t:"Servicios Públicos",s:"residuos · poda y derribo",x:5.5,y:20.4,w:6,h:2.1,c:COL.red,vent:"residuos · poda y derribo",eq:"no",
   det:["Residuos · poda y derribo","Soporte técnico y mantenimiento","Requiere equipo completo (adquisición)"]},
- {id:"deseco",t:"Desarrollo Económico",s:"3 ventanillas",x:12,y:20.4,w:8.2,h:2.1,c:COL.amber,vent:"3 ventanillas",eq:"no",
+ {id:"deseco",t:"Desarrollo Económico",s:"licencias de empadronamiento",x:12,y:20.4,w:8.2,h:2.1,c:COL.amber,vent:"licencias de empadronamiento",eq:"no",
   det:["Apertura · Renovación · Baja de licencias de empadronamiento","Requiere equipo completo (adquisición)"]},
- {id:"finanzas",t:"Finanzas / Catastro",s:"3 ventanillas",x:21,y:20.4,w:6.5,h:2.1,c:COL.blue,vent:"3 ventanillas",eq:"si",
+ {id:"finanzas",t:"Finanzas / Catastro",s:"predial · catastro",x:21,y:20.4,w:6.5,h:2.1,c:COL.blue,vent:"predial · catastro",eq:"si",
   det:["1 ventanilla de gestiones + 2 de Catastro","Alimenta la mayor cola de espera (32 lugares)"]},
  {id:"copiado",t:"Copiado",s:"proveedor",x:28,y:20.4,w:3.2,h:2.1,c:COL.gray,vent:"1 posición",eq:"no",
   det:["Fotocopiado e impresión para el ciudadano","Concesionado a proveedor"]},
@@ -301,7 +306,7 @@ function summary(){
   <h2>El lobby como CAM</h2>
   <div class="msub">Haz clic en cualquier módulo del plano para ver su detalle.</div>
   <div class="grid">
-    <div class="card"><div class="v">13</div><div class="l">ventanillas en 10 módulos</div></div>
+    <div class="card"><div class="v">8+3</div><div class="l">ventanillas: 8 atención + 3 recepción = 11 pos.</div></div>
     <div class="card"><div class="v">56</div><div class="l">sillas: 32 Finanzas + 24 At. Ciudadana</div></div>
     <div class="card"><div class="v">2</div><div class="l">cajeros inteligentes</div></div>
     <div class="card"><div class="v">070</div><div class="l">10 posiciones tel. en nivel superior</div></div>
