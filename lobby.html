@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Levantamiento Lobby CAM · BLOQUE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',system-ui,sans-serif}
+:root{
+  --navy:#254185;--blue:#005ab2;--cyan:#2a9eda;--red:#ce3a2b;--amber:#d97a06;
+  --purple:#7b2d8e;--ayto:#5b4bab;--green:#2f9e44;--gray:#5a6273;--ink:#1b2536;
+  --line:#c9d3e2;--bg:#eef2f7;
+}
+body{background:var(--bg);color:var(--ink);width:1680px}
+.frame{background:#fff;border:1px solid #dbe3ef;box-shadow:0 8px 30px rgba(20,40,90,.10)}
+.head{background:linear-gradient(100deg,#1d3670,#254185 60%,#2a4f9e);color:#fff;padding:18px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.head .ttl h1{font-size:23px;font-weight:900;letter-spacing:.2px}
+.head .ttl .sub{font-size:12.5px;color:#bcd0f0;margin-top:3px;font-weight:500}
+.head .brand{text-align:right;font-size:11px;font-weight:800;line-height:1.25;white-space:nowrap}
+.head .brand em{color:#7fc3f2;font-style:normal;display:block;font-size:14px;letter-spacing:.5px}
+.kpis{display:flex;gap:10px;padding:12px 30px;background:#f7f9fc;border-bottom:1px solid #e7ecf3;flex-wrap:wrap}
+.kpi{background:#fff;border:1px solid #e2e8f1;border-radius:11px;padding:8px 14px;display:flex;align-items:center;gap:9px}
+.kpi .v{font-size:20px;font-weight:900;color:var(--navy);line-height:1}
+.kpi .l{font-size:10.5px;color:#6b7688;font-weight:600;line-height:1.15;max-width:120px}
+.kpi.accent .v{color:var(--red)}
+.body{display:flex;gap:0}
+.stage{flex:1;padding:14px 8px 8px 18px;position:relative}
+#plan{width:100%;height:auto;display:block;user-select:none}
+.side{width:372px;flex:none;background:#f7f9fc;border-left:1px solid #e7ecf3;padding:18px 20px;display:flex;flex-direction:column}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tg{font-size:11px;font-weight:700;color:var(--navy);background:#fff;border:1.5px solid #cdd8e8;border-radius:20px;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s}
+.tg .dot{width:9px;height:9px;border-radius:50%;background:#cdd8e8}
+.tg.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tg.on .dot{background:#7fc3f2}
+.det{background:#fff;border:1px solid #e2e8f1;border-radius:14px;padding:16px;flex:1;overflow:auto}
+.det .eyebrow{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#93a0b4}
+.det h2{font-size:19px;font-weight:900;margin:4px 0 3px;line-height:1.15}
+.det .msub{font-size:12.5px;color:#6b7688;font-weight:600;margin-bottom:12px}
+.det .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;border-radius:20px;padding:4px 11px;margin:0 6px 8px 0}
+.b-si{background:#e6f4ea;color:#1e7a37}.b-parc{background:#fdf1dc;color:#a5710f}.b-no{background:#fbe6e6;color:#ce3a2b}
+.det .row{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid #eef2f7;font-size:12.5px;line-height:1.35}
+.det .row b{color:var(--navy)}
+.det .row .ic{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px}
+.det .hint{font-size:11px;color:#93a0b4;margin-top:12px;line-height:1.4}
+.det.summary .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.det.summary .card{background:#f7f9fc;border:1px solid #e7ecf3;border-radius:10px;padding:9px 11px}
+.det.summary .card .v{font-size:16px;font-weight:900;color:var(--navy)}
+.det.summary .card .l{font-size:10px;color:#6b7688;font-weight:600}
+.legend{margin-top:12px;background:#fff;border:1px solid #e2e8f1;border-radius:12px;padding:12px 14px}
+.legend h3{font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#93a0b4;margin-bottom:8px}
+.legend .lg{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:#41506a;padding:2.5px 0}
+.legend .sw{width:13px;height:13px;border-radius:3px;flex:none}
+.foot{font-size:10.5px;color:#8794a8;padding:10px 30px 14px;line-height:1.45;border-top:1px solid #eef2f7}
+/* svg element classes */
+.mod{cursor:pointer}
+.mod rect{transition:.15s}
+.mod:hover rect.fill{filter:brightness(1.08)}
+.mod.sel rect.fill{stroke:#111 !important;stroke-width:2.4 !important}
+text{pointer-events:none}
+.hidden{display:none !important}
+</style></head>
+<body>
+<div class="frame">
+  <div class="head">
+    <div class="ttl">
+      <h1>Levantamiento del lobby · Centro de Atención Municipal (CAM)</h1>
+      <div class="sub">Planta Baja · BLOQUE · propuesta de acomodo para la Zona Norte durante la obra del Tren México–Querétaro</div>
+    </div>
+    <div class="brand"><em>ATENCIÓN CIUDADANA</em>QUERÉTARO · CON FUTURO</div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><span class="v">10</span><span class="l">módulos de atención</span></div>
+    <div class="kpi"><span class="v">13</span><span class="l">ventanillas de trámite</span></div>
+    <div class="kpi accent"><span class="v">56</span><span class="l">sillas de espera (32 + 24)</span></div>
+    <div class="kpi"><span class="v">2</span><span class="l">cajeros inteligentes</span></div>
+    <div class="kpi accent"><span class="v">200–400</span><span class="l">visitas / día estimadas</span></div>
+    <div class="kpi"><span class="v">~44 × 26 m</span><span class="l">superficie propuesta</span></div>
+  </div>
+  <div class="body">
+    <div class="stage">
+      <svg id="plan" viewBox="0 0 1360 910" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="side">
+      <div class="controls">
+        <div class="tg on" data-layer="personas"><span class="dot"></span>Personas</div>
+        <div class="tg on" data-layer="medidas"><span class="dot"></span>Medidas</div>
+        <div class="tg on" data-layer="flujo"><span class="dot"></span>Recorrido</div>
+        <div class="tg on" data-layer="etiquetas"><span class="dot"></span>Etiquetas</div>
+      </div>
+      <div id="det" class="det summary"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+  <div class="foot">
+    Base: plano oficial CIC-ARQ-PB "Planta Baja BLOQUE" (Obras Públicas, oct 2022) + Lay Out de Atención Ciudadana (Operaciones BLOQUE, 5-jul). <b>Medidas propuestas, indicativas; a confirmar en sitio con Obras Públicas.</b> Toda la atención presencial en planta baja; el Recaudamóvil opera en zona externa con vigilancia SSP 24 h. · QUERÉTARO CON FUTURO
+  </div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+const S=24, OX=150, OY=120;               // scale px/m, interior origin
+const W=44, D=26;                          // interior meters
+const X=m=>OX+m*S, Y=m=>OY+m*S, L=m=>m*S;
+const svg=document.getElementById("plan");
+function el(t,a={},parent=svg){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);parent.appendChild(e);return e;}
+function txt(x,y,s,a={},parent=svg){const e=el("text",Object.assign({x,y},a),parent);e.textContent=s;return e;}
+const COL={navy:"#254185",blue:"#005ab2",cyan:"#2a9eda",red:"#ce3a2b",amber:"#d97a06",purple:"#7b2d8e",ayto:"#5b4bab",green:"#2f9e44",gray:"#5a6273"};
+
+/* layer groups */
+const gFloor=el("g",{}), gFix=el("g",{}), gZone=el("g",{}), gSeat=el("g",{}),
+      gMod=el("g",{}), gPeople=el("g",{class:"layer-personas"}),
+      gFlow=el("g",{class:"layer-flujo"}), gDim=el("g",{class:"layer-medidas"}),
+      gLab=el("g",{class:"layer-etiquetas"});
+
+/* ---------- floor + walls ---------- */
+el("rect",{x:X(0),y:Y(0),width:L(W),height:L(D),rx:6,fill:"#fbfcfe",stroke:"#classcolor"},gFloor);
+el("rect",{x:X(0),y:Y(0),width:L(W),height:L(D),rx:6,fill:"#fbfcfe",stroke:"#8ea2c4","stroke-width":2.5},gFloor);
+// grid
+for(let i=2;i<W;i+=2)el("line",{x1:X(i),y1:Y(0),x2:X(i),y2:Y(D),stroke:"#eaf0f8","stroke-width":1},gFloor);
+for(let j=2;j<D;j+=2)el("line",{x1:X(0),y1:Y(j),x2:X(W),y2:Y(j),stroke:"#eaf0f8","stroke-width":1},gFloor);
+
+/* fixed building core (right strip): elevators, stairs, sanitarios */
+el("rect",{x:X(40),y:Y(0),width:L(4),height:L(D),fill:"#eef2f7",stroke:"#c3cfe0","stroke-width":1.5},gFix);
+[["ELEVADORES",4],["ESCALERAS\nDE EMERGENCIA",10.5],["DUCTOS · VACÍO",16],["SANITARIOS\nH · M · familiar",21.5]].forEach(([t,yy])=>{
+  el("rect",{x:X(40.4),y:Y(yy),width:L(3.2),height:L(3.4),rx:3,fill:"#fff",stroke:"#cdd8e8","stroke-width":1.2},gFix);
+});
+txt(X(42),Y(0)-8,"NÚCLEO FIJO DEL EDIFICIO",{"text-anchor":"middle","font-size":10,"font-weight":800,fill:"#8794a8"},gFix);
+
+/* central architectural circle (double-height void / rotonda) */
+el("circle",{cx:X(12),cy:Y(15),r:L(4.2),fill:"none",stroke:"#d5deec","stroke-width":1.6,"stroke-dasharray":"5 5"},gFloor);
+txt(X(12),Y(15),"vacío /",{"text-anchor":"middle","font-size":9.5,fill:"#b7c2d6"},gFloor);
+txt(X(12),Y(15)+12,"rotonda",{"text-anchor":"middle","font-size":9.5,fill:"#b7c2d6"},gFloor);
+
+/* attention/waiting zone shading */
+el("rect",{x:X(3.5),y:Y(7.5),width:L(35),height:L(15.5),rx:10,fill:"rgba(42,79,158,.05)",stroke:COL.navy,"stroke-width":1.6,"stroke-dasharray":"7 6"},gZone);
+txt(X(4),Y(7.5)-6,"ZONA DE ATENCIÓN CIUDADANA PROPUESTA",{"font-size":10.5,"font-weight":800,fill:COL.navy,"letter-spacing":.5},gZone);
+
+/* ---------- glyph helpers ---------- */
+function chair(cx,cy,occ,g){
+  const c=occ?"#cfe0f5":"#fff",s=occ?COL.blue:"#a9b8d0";
+  el("rect",{x:cx-6,y:cy-6,width:12,height:13,rx:2.4,fill:c,stroke:s,"stroke-width":1.3},g);
+  el("rect",{x:cx-6,y:cy-8.5,width:12,height:4,rx:2,fill:c,stroke:s,"stroke-width":1.3},g);
+}
+function person(cx,cy,color,g){
+  const gp=el("g",{},g);
+  el("circle",{cx,cy:cy-5,r:3.1,fill:color},gp);
+  el("path",{d:`M ${cx-4.4} ${cy+6} q 4.4 -8 8.8 0 z`,fill:color},gp);
+  return gp;
+}
+function vehicle(x,y,w,h,g){
+  el("rect",{x:X(x),y:Y(y),width:L(w),height:L(h),rx:6,fill:"#fff",stroke:COL.green,"stroke-width":2},g);
+  el("rect",{x:X(x)+6,y:Y(y)+5,width:L(w)-12,height:L(h)*.42,rx:3,fill:"#e7f4ea"},g);
+}
+
+/* ---------- seating blocks (56 chairs) ---------- */
+function seatBlock(x0,y0,rows,cols,label,g){
+  let n=0;
+  const pitchX=(cols>1)?1.0:0, pitchY=1.35;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const cx=X(x0+c*1.0), cy=Y(y0+r*1.35);
+    const occ=((r*cols+c)%3!==0); // ~66% ocupadas
+    chair(cx,cy,occ,g);
+    if(occ) person(cx,cy-1,"#3f6fb5",gPeople);
+    n++;
+  }
+  return n;
+}
+// Espera 32: 4 filas x 8
+seatBlock(16.7,9.4,4,8,"Espera 32",gSeat);
+// Espera 24: 4 filas x 6
+seatBlock(28.2,13.2,4,6,"Espera 24",gSeat);
+txt(X(20.7),Y(9.4)-9,"ESPERA · 32 lugares",{"text-anchor":"middle","font-size":10.5,"font-weight":800,fill:COL.navy},gLab);
+txt(X(30.7),Y(13.2)-9,"ESPERA · 24 lugares",{"text-anchor":"middle","font-size":10.5,"font-weight":800,fill:COL.navy},gLab);
+
+/* ---------- modules ---------- */
+const MODS=[
+ {id:"info",t:"Módulo de Información",s:"barra alta · 2 posiciones",x:3.5,y:2,w:6.2,h:2,c:COL.cyan,vent:"2 posiciones",eq:"si",
+  det:["2 computadoras + teléfono","Orienta y direcciona al ciudadano al módulo correcto","Primer punto de contacto al entrar"]},
+ {id:"filtro",t:"Módulo de Filtro",s:"revisión previa de trámites",x:17.5,y:23,w:5,h:1.7,c:COL.cyan,vent:"1 posición",eq:"si",
+  det:["Laptop + teléfono","Revisión previa de requisitos antes de formarse","Reduce rebotes en ventanilla"]},
+ {id:"ayto",t:"Ayuntamiento",s:"1 ventanilla",x:21.5,y:1.6,w:4,h:2.1,c:COL.ayto,vent:"1 ventanilla",eq:"no",
+  det:["Constancias de residencia","Requiere equipo de cómputo e impresión (adquisición)"]},
+ {id:"ofic",t:"Oficialía de Partes",s:"+ copiado",x:25.7,y:1.6,w:4.9,h:2.1,c:COL.gray,vent:"1 posición",eq:"no",
+  det:["Recepción de documentos oficiales","Servicio de copiado (proveedor externo)","Requiere mobiliario (adquisición)"]},
+ {id:"recep",t:"Recepción",s:"Op. BLOQUE · gestiones",x:30.8,y:1.6,w:6.5,h:2.1,c:COL.gray,vent:"3 posiciones",eq:"si",
+  det:["Recepción Des. Económico · Recepción BLOQUE · Op. BLOQUE","Correspondencia y gestiones internas"]},
+ {id:"urbano",t:"Desarrollo Urbano",s:"6 mesas altas · revisión de planos",x:1.8,y:8.5,w:7,h:8.5,c:COL.purple,vent:"6 mesas altas",eq:"parc",
+  det:["6 periqueras / mesas altas para análisis técnico de planos","VPN a Siebel (home-office seguro)","BLOQUE aporta 4 periqueras; falta cómputo"]},
+ {id:"atencion",t:"Atención Ciudadana",s:"4 ventanillas",x:34.5,y:8.5,w:3.2,h:10,c:COL.navy,vent:"4 ventanillas",eq:"si",
+  det:["Revisión previa","Ingreso de trámites","Respuestas","Promotores","Es el frente principal del CAM"]},
+ {id:"servpub",t:"Servicios Públicos",s:"2 ventanillas",x:5.5,y:20.4,w:6,h:2.1,c:COL.red,vent:"2 ventanillas",eq:"no",
+  det:["Residuos · poda y derribo","Soporte técnico y mantenimiento","Requiere equipo completo (adquisición)"]},
+ {id:"deseco",t:"Desarrollo Económico",s:"3 ventanillas",x:12,y:20.4,w:8.2,h:2.1,c:COL.amber,vent:"3 ventanillas",eq:"no",
+  det:["Apertura · Renovación · Baja de licencias de empadronamiento","Requiere equipo completo (adquisición)"]},
+ {id:"finanzas",t:"Finanzas / Catastro",s:"3 ventanillas",x:21,y:20.4,w:6.5,h:2.1,c:COL.blue,vent:"3 ventanillas",eq:"si",
+  det:["1 ventanilla de gestiones + 2 de Catastro","Alimenta la mayor cola de espera (32 lugares)"]},
+ {id:"copiado",t:"Copiado",s:"proveedor",x:28,y:20.4,w:3.2,h:2.1,c:COL.gray,vent:"1 posición",eq:"no",
+  det:["Fotocopiado e impresión para el ciudadano","Concesionado a proveedor"]},
+];
+const CAJ=[{id:"caj1",x:19,y:15.3},{id:"caj2",x:32,y:8.8}];
+
+function drawMod(m){
+  const g=el("g",{class:"mod","data-id":m.id},gMod);
+  el("rect",{class:"fill",x:X(m.x),y:Y(m.y),width:L(m.w),height:L(m.h),rx:5,fill:m.c,opacity:.92,stroke:"#fff","stroke-width":1.4},g);
+  // ventanilla counter line (front)
+  el("line",{x1:X(m.x)+3,y1:Y(m.y+m.h)-3,x2:X(m.x+m.w)-3,y2:Y(m.y+m.h)-3,stroke:"#fff","stroke-width":2.4,opacity:.85},g);
+  const cx=X(m.x+m.w/2), cy=Y(m.y+m.h/2);
+  if(m.h>m.w*1.6){ // banda vertical: etiqueta rotada
+    txt(cx-5,cy,m.t,{"text-anchor":"middle","font-size":13,"font-weight":800,fill:"#fff",transform:`rotate(-90 ${cx-5} ${cy})`},gLab);
+    txt(cx+11,cy,m.s,{"text-anchor":"middle","font-size":10,"font-weight":600,fill:"rgba(255,255,255,.92)",transform:`rotate(-90 ${cx+11} ${cy})`},gLab);
+  }else{
+    txt(cx,cy-(m.h>3?6:1),m.t,{"text-anchor":"middle","font-size":m.w<4.6?9.5:11,"font-weight":800,fill:"#fff"},gLab);
+    txt(cx,cy+(m.h>3?9:12),m.s,{"text-anchor":"middle","font-size":9,"font-weight":600,fill:"rgba(255,255,255,.92)"},gLab);
+  }
+  g.addEventListener("click",()=>select(m.id));
+}
+MODS.forEach(drawMod);
+
+// cajeros
+CAJ.forEach(c=>{
+  const g=el("g",{class:"mod","data-id":c.id},gMod);
+  el("rect",{class:"fill",x:X(c.x),y:Y(c.y),width:L(1.7),height:L(1.7),rx:4,fill:COL.green,stroke:"#fff","stroke-width":1.4},g);
+  txt(X(c.x+.85),Y(c.y+.85)+3,"$",{"text-anchor":"middle","font-size":15,"font-weight":900,fill:"#fff"},g);
+  g.addEventListener("click",()=>selectCaj());
+});
+txt(X(19.85),Y(15.3)-6,"Cajero 1",{"text-anchor":"middle","font-size":9.5,"font-weight":700,fill:COL.green},gLab);
+txt(X(32.85),Y(8.8)-6,"Cajero 2",{"text-anchor":"middle","font-size":9.5,"font-weight":700,fill:COL.green},gLab);
+
+/* staff behind key counters + queues */
+[[36.1,10],[36.1,12.5],[36.1,15],[36.1,17.5]].forEach(p=>person(X(p[0]),Y(p[1]),COL.navy,gPeople)); // atencion staff
+[[24.2,21.4],[26,21.4]].forEach(p=>person(X(p[0]),Y(p[1]),COL.blue,gPeople)); // finanzas staff
+// queue at atencion
+[[33.4,10.5],[33.4,12],[33.4,13.5],[33.4,15]].forEach(p=>person(X(p[0]),Y(p[1]),"#c98a2a",gPeople));
+// walking in flow
+[[24,24.6],[21,18],[27,16.5]].forEach(p=>person(X(p[0]),Y(p[1]),"#7d8aa0",gPeople));
+
+/* ---------- entrance + facade ---------- */
+el("rect",{x:X(0),y:Y(D)-3,width:L(W),height:6,fill:"#bcd0ee"},gFloor); // glass facade band
+txt(X(29.5),Y(D)+16,"Fachada de cristal · vinil microperforado",{"font-size":10,"font-weight":600,fill:"#7c93b8"},gLab);
+// main entrance gap
+el("rect",{x:X(22),y:Y(D)-4,width:L(4),height:8,fill:"#fff",stroke:COL.cyan,"stroke-width":2},gFloor);
+txt(X(24),Y(D)+16,"ACCESO PRINCIPAL",{"text-anchor":"middle","font-size":10.5,"font-weight":800,fill:COL.cyan},gLab);
+
+/* ---------- Recaudamóvil (external) ---------- */
+el("rect",{x:X(19.5),y:Y(D)+22,width:L(9),height:L(3.2),rx:8,fill:"rgba(47,158,68,.06)",stroke:COL.green,"stroke-width":1.4,"stroke-dasharray":"6 5"},gFix);
+vehicle(20.2,27.15,3,2.1,gFix);
+txt(X(24),Y(D)+38,"RECAUDAMÓVIL",{"font-size":11,"font-weight":800,fill:COL.green},gFix);
+txt(X(24),Y(D)+51,"zona externa · vigilancia SSP 24 h",{"font-size":9.5,"font-weight":600,fill:"#4f8a5f"},gFix);
+
+/* ---------- flow (recorrido del ciudadano) ---------- */
+el("defs",{},gFlow).innerHTML='<marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2a9eda"/></marker>';
+function flow(pts){
+  const d="M "+pts.map(p=>`${X(p[0])} ${Y(p[1])}`).join(" L ");
+  el("path",{d,fill:"none",stroke:COL.cyan,"stroke-width":3,"stroke-dasharray":"2 7","stroke-linecap":"round",opacity:.9,"marker-end":"url(#arw)"},gFlow);
+}
+flow([[24,24.5],[19.5,23],[21,19],[23.5,13]]);  // acceso -> filtro -> espera
+flow([[23.5,13],[31,14.5],[34.2,14.5]]);        // espera -> atencion ciudadana
+flow([[24,19],[24,20.2]]);                       // rama -> finanzas
+[[24,24.7,"1"],[16.3,23,"2"],[23.5,12,"3"],[33.6,16,"4"]].forEach(s=>{
+  el("circle",{cx:X(s[0]),cy:Y(s[1]),r:11,fill:COL.cyan,stroke:"#fff","stroke-width":2},gFlow);
+  txt(X(s[0]),Y(s[1])+4,s[2],{"text-anchor":"middle","font-size":12,"font-weight":900,fill:"#fff"},gFlow);
+});
+// leyenda del recorrido (esquina inferior izquierda, sin chocar con cotas)
+const flg=el("g",{},gFlow);
+el("rect",{x:X(1),y:Y(24.2),width:200,height:66,rx:8,fill:"#fff",stroke:COL.cyan,"stroke-width":1.3,opacity:.96},flg);
+txt(X(1)+12,Y(24.2)+18,"RECORRIDO DEL CIUDADANO",{"font-size":10,"font-weight":800,fill:COL.cyan},flg);
+["1 Acceso   2 Información y filtro","3 Espera   4 Ventanilla   5 Cajero"].forEach((t,i)=>{
+  txt(X(1)+12,Y(24.2)+37+i*15,t,{"font-size":10.5,"font-weight":600,fill:"#41506a"},flg);
+});
+
+/* ---------- dimensions ---------- */
+function dimH(x1,x2,y,label,off=-26){
+  const yy=Y(y)+off;
+  el("line",{x1:X(x1),y1:yy,x2:X(x2),y2:yy,stroke:"#8a97ad","stroke-width":1.2},gDim);
+  [x1,x2].forEach(x=>el("line",{x1:X(x),y1:yy-5,x2:X(x),y2:yy+5,stroke:"#8a97ad","stroke-width":1.2},gDim));
+  const t=txt((X(x1)+X(x2))/2,yy-5,label,{"text-anchor":"middle","font-size":11,"font-weight":800,fill:"#41506a"},gDim);
+  const bb=(X(x2)-X(x1));el("rect",{x:(X(x1)+X(x2))/2-32,y:yy-18,width:64,height:15,fill:"#fff",opacity:.85},gDim);
+  gDim.appendChild(t);
+}
+function dimV(y1,y2,x,label,off=-26){
+  const xx=X(x)+off;
+  el("line",{x1:xx,y1:Y(y1),x2:xx,y2:Y(y2),stroke:"#8a97ad","stroke-width":1.2},gDim);
+  [y1,y2].forEach(y=>el("line",{x1:xx-5,y1:Y(y),x2:xx+5,y2:Y(y),stroke:"#8a97ad","stroke-width":1.2},gDim));
+  const cy=(Y(y1)+Y(y2))/2;
+  el("rect",{x:xx-9,y:cy-34,width:18,height:68,fill:"#fff",opacity:.85},gDim);
+  txt(xx+4,cy,label,{"text-anchor":"middle","font-size":11,"font-weight":800,fill:"#41506a",transform:`rotate(-90 ${xx+4} ${cy})`},gDim);
+}
+dimH(0,44,0,"≈ 44.0 m (frente propuesto)",-30);
+dimV(0,26,0,"≈ 26.0 m (fondo)",-34);
+dimH(34.5,37.7,8.5,"10.0 m de ventanillas",-8);
+// pasillo central 3 m
+el("line",{x1:X(24),y1:Y(16),x2:X(24),y2:Y(23),stroke:COL.cyan,"stroke-width":1,"stroke-dasharray":"3 4",opacity:.6},gDim);
+txt(X(24)+6,Y(19),"pasillo 3.0 m",{"font-size":10,"font-weight":700,fill:COL.cyan,transform:`rotate(-90 ${X(24)+6} ${Y(19)})`},gDim);
+txt(1352,Y(0)-14,"Medidas propuestas · indicativas",{"text-anchor":"end","font-size":10,"font-style":"italic",fill:"#93a0b4"},gDim);
+
+/* ---------- interactivity ---------- */
+const det=document.getElementById("det");
+const badge={si:['b-si','Equipo propio'],no:['b-no','Equipo por adquirir'],parc:['b-parc','Solo cómputo']};
+function summary(){
+  det.className="det summary";
+  det.innerHTML=`<div class="eyebrow">Resumen del acomodo</div>
+  <h2>El lobby como CAM</h2>
+  <div class="msub">Haz clic en cualquier módulo del plano para ver su detalle.</div>
+  <div class="grid">
+    <div class="card"><div class="v">13</div><div class="l">ventanillas en 10 módulos</div></div>
+    <div class="card"><div class="v">56</div><div class="l">sillas: 32 Finanzas + 24 At. Ciudadana</div></div>
+    <div class="card"><div class="v">2</div><div class="l">cajeros inteligentes</div></div>
+    <div class="card"><div class="v">070</div><div class="l">10 posiciones tel. en nivel superior</div></div>
+  </div>
+  <div class="hint"><b style="color:#254185">Estrategia:</b> concentrar toda la atención presencial de la Zona Norte en planta baja, con recorrido claro Acceso → Información → Espera → Ventanilla → Cajero. El Recaudamóvil queda afuera con SSP 24 h. BLOQUE aporta 20 sillas + 4 periqueras; el resto es adquisición.</div>`;
+}
+function select(id){
+  document.querySelectorAll('.mod').forEach(n=>n.classList.toggle('sel',n.getAttribute('data-id')===id));
+  const m=MODS.find(x=>x.id===id); if(!m){summary();return;}
+  det.className="det";
+  const [bc,bt]=badge[m.eq];
+  det.innerHTML=`<div class="eyebrow">Módulo</div><h2>${m.t}</h2><div class="msub">${m.s}</div>
+    <span class="badge ${bc}">${bt}</span><span class="badge b-si" style="background:#eef2fb;color:#254185">${m.vent}</span>
+    ${m.det.map(d=>`<div class="row"><span class="ic" style="background:${m.c}"></span><div>${d}</div></div>`).join("")}
+    <div class="hint">Ubicación indicativa sobre el plano oficial; ajustable en sitio.</div>`;
+}
+function selectCaj(){
+  document.querySelectorAll('.mod').forEach(n=>n.classList.remove('sel'));
+  det.className="det";
+  det.innerHTML=`<div class="eyebrow">Módulo</div><h2>Cajeros inteligentes</h2><div class="msub">2 fijos + 1 unidad móvil</div>
+    <span class="badge b-si">Equipo propio</span>
+    <div class="row"><span class="ic" style="background:#2f9e44"></span><div>Pago de predial, agua, multas y derechos sin ventanilla</div></div>
+    <div class="row"><span class="ic" style="background:#2f9e44"></span><div>Solo requieren toma eléctrica y red</div></div>
+    <div class="hint">Descargan la cola de Finanzas.</div>`;
+}
+summary();
+
+/* legend */
+const LEG=[["#254185","Atención Ciudadana"],["#005ab2","Finanzas / Catastro"],["#ce3a2b","Servicios Públicos"],
+["#d97a06","Desarrollo Económico"],["#5b4bab","Ayuntamiento"],["#7b2d8e","Desarrollo Urbano"],
+["#2a9eda","Información / filtro / acceso"],["#2f9e44","Cajeros"],["#5a6273","Oficialía / recepción / copiado"]];
+document.getElementById("legend").innerHTML="<h3>Dependencias</h3>"+LEG.map(l=>`<div class="lg"><span class="sw" style="background:${l[0]}"></span>${l[1]}</div>`).join("");
+
+/* layer toggles */
+document.querySelectorAll('.tg').forEach(t=>t.addEventListener('click',()=>{
+  t.classList.toggle('on');
+  const on=t.classList.contains('on'), lay=t.dataset.layer;
+  document.querySelectorAll('.layer-'+lay).forEach(g=>g.classList.toggle('hidden',!on));
+}));
+</script>
+</body></html>
